@@ -120,11 +120,16 @@ plugins directory (`ln -s "$PWD" ~/.cursor/plugins/agentisend`), then reload
 Cursor — the manifest is `.cursor-plugin/plugin.json`.
 
 **Grok Build:** run `/marketplace` and pick AgentiSend, or add this repository
-as a marketplace source. The Grok manifest (`.grok-plugin/plugin.json`) is the
-only one that bundles the hosted server through its `mcpServers` field, so Grok
-gets the tools and the skill in one install. The Claude Code and Cursor plugins
-are skill-only on purpose: installing one never registers a second AgentiSend
-server beside a connector you already have.
+as a marketplace source. Grok reads the server out of the plugin manifest, so
+`.grok-plugin/plugin.json` carries it under `mcpServers` and one install brings
+the tools and the skill together.
+
+Claude Code reads `.mcp.json` at the repository root instead, so `/plugin
+install` brings both as well — after it, `claude mcp list` shows the server as
+`plugin:agentisend:agentisend`. If you already have an AgentiSend connector,
+remove one of the two rather than running both. Cursor reads neither file: the
+Cursor plugin installs the skill alone, and the deeplink above adds the
+server.
 
 **Any agent (skill only):**
 
@@ -183,7 +188,7 @@ than your first send.
 ## Links
 
 - MCP server and tool list: https://agentisend.com/docs/guides/mcp
-- Quickstart: https://agentisend.com/docs/quickstart
+- Quickstart: https://agentisend.com/docs/guides/quickstart
 - Budgets and the kill switch: https://agentisend.com/docs/guides/budgets-and-the-kill-switch
 - Errors: https://agentisend.com/docs/errors
 - Pricing: https://agentisend.com/pricing

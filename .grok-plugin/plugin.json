@@ -24,13 +24,11 @@
     "./skills/agentisend"
   ],
   "mcpServers": {
-    "mcpServers": {
-      "agentisend": {
-        "type": "http",
-        "url": "https://api.agentisend.com/mcp",
-        "headers": {
-          "Authorization": "Bearer ${AGENTISEND_API_KEY}"
-        }
+    "agentisend": {
+      "type": "http",
+      "url": "https://api.agentisend.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${AGENTISEND_API_KEY}"
       }
     }
   }
