@@ -124,6 +124,7 @@
   "global_flags": [
     "json",
     "help",
+    "version",
     "profile",
     "api-key",
     "base-url"

@@ -7,6 +7,7 @@ before anything runs, so a typo cannot become a send with a field missing.
 
 - `--json`
 - `--help`
+- `--version`
 - `--profile`
 - `--api-key`
 - `--base-url`
