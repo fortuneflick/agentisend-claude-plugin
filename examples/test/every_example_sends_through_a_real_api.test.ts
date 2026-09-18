@@ -12,7 +12,7 @@ import {
   registerRoutes,
 } from '@agentisend/api';
 import { accounts, apiKeys } from '@agentisend/core';
-import { createTestDb, type TestDb } from '@agentisend/core/testing';
+import { LIVE_TEST_PLAN, createTestDb, type TestDb } from '@agentisend/core/testing';
 import { FakeTransport } from '@agentisend/transport';
 import type { FastifyInstance } from 'fastify';
 import { AgentiSend, type Email } from '@agentisend/sdk-node';
@@ -47,9 +47,11 @@ let owner: AgentiSend;
 
 beforeAll(async () => {
   testDb = await createTestDb();
+  // On a live plan, as a reader who copies these files is: an account without
+  // one sends simulation mail only, and every example here does a real send.
   const [account] = await testDb.db
     .insert(accounts)
-    .values({ name: 'examples' })
+    .values({ name: 'examples', ...LIVE_TEST_PLAN })
     .returning({ id: accounts.id });
 
   configureKeyCrypto(PEPPER);

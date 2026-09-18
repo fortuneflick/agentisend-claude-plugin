@@ -33,8 +33,12 @@ stopped you.
 | `session_required` | no | Sign in to the console, then retry. API keys cannot call this route. |
 | `csrf_origin_rejected` | no | Call the API with an API key (Authorization: Bearer …) instead of a session cookie, or make the request from the console. Create a key in the console under Settings, API keys. |
 | `mfa_required` | no | Finish signing in at /verify with a code from your authenticator app, or one of your recovery codes. Manage the second factor in the console under Settings, Security. |
-| `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then every account stays on the free tier; GET /billing/plan still answers. |
-| `plan_not_purchasable` | no | Pass one of the paid tier ids listed under `purchasable` by GET /billing/plan (starter, pro, scale) to POST /billing/checkout. The free tier needs no checkout. |
+| `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day Pro trial still starts. |
+| `plan_not_purchasable` | no | Pass one of the tier ids listed under `plans` by GET /billing/plan (starter, pro, scale) to POST /billing/checkout. |
+| `plan_required` | no | A person on this account chooses a plan, or starts the 14-day Pro trial, in the console under Settings → Billing. Simulation sends keep working meanwhile. |
+| `trial_already_used` | no | Choose a plan in the console under Settings → Billing; POST /billing/checkout starts the payment. |
+| `plan_already_active` | no | Nothing to start. GET /billing/plan shows the plan, and plan changes are made in the console under Settings → Billing. |
+| `term_not_on_sale` | no | Pass one of the terms listed under `terms_on_sale` by GET /billing/plan (monthly and yearly) to POST /billing/checkout. |
 | `subscription_active` | no | Change plans with POST /billing/portal — the Stripe customer portal prorates the change and shows the amount before it is confirmed. Checkout is only for an account with no subscription. |
 | `billing_customer_missing` | no | Start a subscription with POST /billing/checkout first; the customer portal only exists once a checkout has run. |
 | `stripe_signature_invalid` | no | Only Stripe calls POST /webhooks/stripe. If you are Stripe: the endpoint secret configured as STRIPE_WEBHOOK_SECRET must be the whsec_ of THIS endpoint in THIS mode (test and live differ), and the body must be delivered unmodified. |

@@ -19,6 +19,9 @@ is the in-memory fake. An example that stops working fails the build.
 
 - `AGENTISEND_API_KEY` and `MAIL_FROM` are the only variables every example needs.
   `AGENTISEND_BASE_URL` is optional and defaults to `https://api.agentisend.com`.
+- The key's account needs a plan before real mail goes out: the 14-day Pro trial (no card, up to
+  3,000 emails) or a paid plan from $9 a month. Without one, a real send is refused with
+  `plan_required` and simulation sends still work, so you can wire an example up first.
 - The key is read on the server. None of these examples put it anywhere a browser can reach.
 - Every mutating call carries an `Idempotency-Key` derived from the thing being done
   (`welcome/user@example.com`), not from the moment, so a retry after a timeout replays the first
