@@ -160,6 +160,11 @@ owner runs. Keep the ed25519 private key offline; it is what republishing needs.
 5. After any change to this repository, open a follow-up PR bumping `sha`.
    **Never a parallel entry.**
 
+**Status 2026-09-18:** PR open — https://github.com/xai-org/plugin-marketplace/pull/785,
+from fork `fortuneflick/plugin-marketplace`, branch `add-agentisend`. Expect the
+"official org vs personal account" question; the answer offered in the PR is to
+move this repository to an `agentisend` org and re-pin.
+
 ## 6. claude.ai connectors directory (Team/Enterprise gated)
 
 Packet to have ready:
