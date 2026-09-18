@@ -28,9 +28,10 @@ stopped you.
 | `account_suspended` | no | Suspensions follow the published enforcement policy (docs/TRUST-SAFETY). Contact support to appeal; unused prepaid balance is refunded on termination. |
 | `account_sandboxed` | no | Verify the recipient domain with POST /domains + POST /domains/:id/verify, or file POST /trust/appeal for a person to review this account. |
 | `trust_throttled` | no | Send volume is temporarily capped because deliverability metrics crossed a published threshold. Check GET /trust/standing for the metric and value, file POST /trust/appeal if this is unexpected. |
-| `suppressed_recipient` | no | Remove the address via DELETE /suppressions/:id if this is unexpected, then retry. |
+| `suppressed_recipient` | no | GET /suppressions says which address and why. A hard bounce you have fixed can be cleared with DELETE /suppressions/:id; an unsubscribe or a spam complaint cannot — that address asked not to be contacted. |
 | `missing_api_key` | no | Sign in at /login so the console sends its session cookie, or create a key with POST /api-keys and send "Authorization: Bearer as_...". |
 | `session_required` | no | Sign in to the console, then retry. API keys cannot call this route. |
+| `human_action_required` | no | Ask whoever runs this account to do it in the console. Scoping the key differently does not change the answer, and retrying fails the same way. |
 | `csrf_origin_rejected` | no | Call the API with an API key (Authorization: Bearer …) instead of a session cookie, or make the request from the console. Create a key in the console under Settings, API keys. |
 | `mfa_required` | no | Finish signing in at /verify with a code from your authenticator app, or one of your recovery codes. Manage the second factor in the console under Settings, Security. |
 | `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day Pro trial still starts. |
@@ -58,18 +59,18 @@ stopped you.
 | `method_not_allowed` | no | Use a method listed in Allow for this route. |
 | `idempotency_in_flight` | wait 5s | Wait and retry with the same Idempotency-Key to receive the original response. |
 | `idempotency_payload_mismatch` | no | Reuse the exact same body for retries, or send a new Idempotency-Key for a new request. |
-| `agent_budget_exceeded` | no | Raise budget_per_period via PATCH /limits/keys/:id, or wait for the period to reset. |
+| `agent_budget_exceeded` | no | Wait for the period to reset — get_agent_budget and GET /limits/keys/:id both say when. Raising a budget is a person’s decision, made in the console; a key cannot raise its own. |
 | `plan_limit_reached` | no | Upgrade in Settings → Billing, or wait until the reset date in this error. |
 | `key_budget_exceeds_plan` | no | Set a whole number at or below the plan inclusion, or upgrade in Settings → Billing. |
 | `domain_limit_reached` | no | Delete a domain with DELETE /domains/:id, or upgrade in Settings → Billing. |
-| `rate_ceiling_exceeded` | wait 60s | Slow down, or raise rate_ceiling_per_minute via PATCH /limits/keys/:id. |
+| `rate_ceiling_exceeded` | wait 60s | Wait the seconds below and send the same request again. Raising the ceiling is a person’s decision, made in the console; a key cannot raise its own. |
 | `daily_quota_exceeded` | no | Upgrade the plan or wait for the UTC reset; see GET /usage for what this account has spent. |
 | `monthly_quota_exceeded` | no | Upgrade the plan or wait for the cycle reset; see GET /usage for what this account has spent. |
 | `rate_limiter_unavailable` | wait 5s | Retry in a few seconds. Nothing was sent and nothing was changed — writes are refused rather than run unmetered against a shared sending reputation. |
 | `rate_limit_exceeded` | wait 60s | Back off and retry honoring the Retry-After header. |
-| `approval_required` | no | Approve the pending action via POST /agent-actions/:id/approve, then retry. |
+| `approval_required` | no | It is waiting in the console approvals inbox; GET /agent-actions shows it and what it says. A person decides — the key that asked cannot approve itself. |
 | `trust_paused` | no | Review reasons via GET /trust/standing, then file an appeal via POST /trust/appeal. |
-| `kill_switch_active` | no | Resume via POST /limits/keys/:id/resume after reviewing GET /trust/standing. |
+| `kill_switch_active` | no | Read GET /trust/standing for why it was paused. Only a person signed in to the console can resume it; the paused key cannot resume itself. |
 | `internal_server_error` | no | Retry ONCE after a short pause, with the same Idempotency-Key so the retry cannot double-send. If it fails again, stop retrying and report the x-request-id from the response — that id is what identifies this exact failure in support. |
 | `support_ticket_not_found` | no | Open Support in the console and pick a request from the list, or start a new one. |
 | `support_closed` | no | Start a new request from Support in the console. If this one was resolved in the last 14 days, reopen it first. |

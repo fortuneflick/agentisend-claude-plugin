@@ -29,7 +29,7 @@ first send      3a6b…
 sends allowed   3
 refused with    approval_required (HTTP 403)
 message         Blocked: this agent has sent 3 near-identical emails to customer@example.com within 60 minutes, …
-fix             Approve the pending action via POST /agent-actions/:id/approve, then retry.
+fix             It is waiting in the console approvals inbox; GET /agent-actions shows it and what it says. A person decides — the key that asked cannot approve itself.
 ```
 
 The held send is in the approval queue: `GET /agent-actions` lists it, `POST /agent-actions/:id/approve`

@@ -69,7 +69,7 @@ Options: `--reason`
 
 ### `agentisend limits resume`
 
-Undo a kill switch.
+Undo a kill switch. A person signed in to the console does this; a key is refused.
 
 ### `agentisend trust standing`
 

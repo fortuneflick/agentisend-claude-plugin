@@ -84,7 +84,7 @@
     },
     {
       "name": "limits resume",
-      "summary": "Undo a kill switch.",
+      "summary": "Undo a kill switch. A person signed in to the console does this; a key is refused.",
       "flags": []
     },
     {

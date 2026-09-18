@@ -11,7 +11,7 @@ import {
   mintApiKey,
   registerRoutes,
 } from '@agentisend/api';
-import { accounts, apiKeys } from '@agentisend/core';
+import { accounts, apiKeys, ERROR_CATALOG } from '@agentisend/core';
 import { LIVE_TEST_PLAN, createTestDb, type TestDb } from '@agentisend/core/testing';
 import { FakeTransport } from '@agentisend/transport';
 import type { FastifyInstance } from 'fastify';
@@ -325,15 +325,16 @@ describe('An agent with a budget and a loop guard', () => {
       'Ticket 4182 — we are looking into it',
     );
 
-    // The refusal is the product: a held send, a 403, and a fix that names the
-    // call which resolves it.
+    // The refusal is the product: a held send, a 403, and a fix that names who
+    // resolves it. W4.1 (AS#60): that is a person, in the console — the fix
+    // used to name the approve endpoint, which the held agent's own key is now
+    // refused at, so the error was telling it how to route around the hold.
     expect(report.refusal.code).toBe('approval_required');
     expect(report.refusal.status).toBe(403);
     expect(report.refusal.sendsBeforeRefusal).toBe(3);
     expect(report.refusal.message).toMatch(/near-identical emails to customer@example.com/);
-    expect(report.refusal.fix).toBe(
-      'Approve the pending action via POST /agent-actions/:id/approve, then retry.',
-    );
+    expect(report.refusal.fix).toBe(ERROR_CATALOG.approval_required.fix);
+    expect(report.refusal.fix).toMatch(/person|console/i);
 
     // The agent's key is scoped to sending and nothing else.
     const key = (await owner.apiKeys.list({ limit: 100 })).data.find(
