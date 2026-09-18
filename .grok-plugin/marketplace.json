@@ -1,0 +1,32 @@
+{
+  "name": "agentisend",
+  "owner": {
+    "name": "AgentiSend",
+    "email": "hello@agentisend.com",
+    "url": "https://agentisend.com"
+  },
+  "metadata": {
+    "description": "Send email from an agent with a budget it cannot exceed, a free preflight that runs every gate a real send runs, and refusals that name the fix.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "agentisend",
+      "description": "Send email from an agent with a budget it cannot exceed, a free preflight that runs every gate a real send runs, and refusals that name the fix.",
+      "category": "productivity",
+      "source": "./",
+      "homepage": "https://agentisend.com/docs/guides/mcp",
+      "keywords": [
+        "agentisend",
+        "agentisend email",
+        "agentisend mcp",
+        "agentisend transactional email",
+        "agentisend agent budget",
+        "agentisend deliverability"
+      ],
+      "domains": [
+        "agentisend.com"
+      ]
+    }
+  ]
+}

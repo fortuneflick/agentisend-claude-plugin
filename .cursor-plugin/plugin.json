@@ -1,0 +1,18 @@
+{
+  "name": "agentisend",
+  "displayName": "AgentiSend",
+  "version": "0.1.0",
+  "description": "Send email from an agent with a budget it cannot exceed, a free preflight that runs every gate a real send runs, and refusals that name the fix.",
+  "author": {
+    "name": "AgentiSend",
+    "email": "hello@agentisend.com",
+    "url": "https://agentisend.com"
+  },
+  "homepage": "https://agentisend.com/docs/guides/mcp",
+  "repository": "https://github.com/fortuneflick/agentisend-claude-plugin",
+  "license": "MIT",
+  "icon": "./assets/logo.svg",
+  "skills": [
+    "./skills/agentisend"
+  ]
+}

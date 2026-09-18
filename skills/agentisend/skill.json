@@ -1,0 +1,131 @@
+{
+  "name": "agentisend",
+  "description": "Send email as an agent: check what you may spend, test a send for free, and ask a person when a send is risky.",
+  "commands": [
+    {
+      "name": "emails send",
+      "summary": "Send one email. Use - with --text-file/--html-file to read the body from stdin.",
+      "flags": [
+        "from",
+        "to",
+        "cc",
+        "bcc",
+        "reply-to",
+        "subject",
+        "html",
+        "text",
+        "html-file",
+        "text-file",
+        "tag",
+        "scheduled-at",
+        "idempotency-key"
+      ]
+    },
+    {
+      "name": "emails get",
+      "summary": "Fetch one message by id.",
+      "flags": []
+    },
+    {
+      "name": "emails list",
+      "summary": "List messages, newest first.",
+      "flags": [
+        "status",
+        "limit",
+        "to"
+      ]
+    },
+    {
+      "name": "emails cancel",
+      "summary": "Cancel a scheduled or queued message.",
+      "flags": []
+    },
+    {
+      "name": "emails explain",
+      "summary": "Why a message ended the way it did, with the fix as callable steps.",
+      "flags": []
+    },
+    {
+      "name": "domains list",
+      "summary": "List sending domains and their status.",
+      "flags": []
+    },
+    {
+      "name": "domains verify",
+      "summary": "Re-check a domain's DNS records.",
+      "flags": []
+    },
+    {
+      "name": "webhooks listen",
+      "summary": "Verify deliveries locally and forward them to your app with the same headers and bytes.",
+      "flags": [
+        "secret",
+        "forward-to",
+        "port",
+        "verify-only"
+      ]
+    },
+    {
+      "name": "receiving listen",
+      "summary": "Stream inbound messages as NDJSON, one JSON object per line.",
+      "flags": [
+        "interval",
+        "limit",
+        "to",
+        "once"
+      ]
+    },
+    {
+      "name": "limits kill",
+      "summary": "Stop a key sending, immediately.",
+      "flags": [
+        "reason"
+      ]
+    },
+    {
+      "name": "limits resume",
+      "summary": "Undo a kill switch.",
+      "flags": []
+    },
+    {
+      "name": "trust standing",
+      "summary": "This account's standing and the reasons behind it.",
+      "flags": []
+    },
+    {
+      "name": "doctor",
+      "summary": "Check credentials, reachability, kill switch, budget, domains and standing.",
+      "flags": []
+    },
+    {
+      "name": "profile list",
+      "summary": "Show configured profiles and which is current.",
+      "flags": []
+    },
+    {
+      "name": "profile use",
+      "summary": "Switch the current profile.",
+      "flags": []
+    },
+    {
+      "name": "profile set",
+      "summary": "Create or update a profile. The key is stored 0600 and never printed back.",
+      "flags": [
+        "api-key",
+        "base-url"
+      ]
+    },
+    {
+      "name": "completions",
+      "summary": "Print a completion script for bash, zsh or fish.",
+      "flags": []
+    }
+  ],
+  "global_flags": [
+    "json",
+    "help",
+    "profile",
+    "api-key",
+    "base-url"
+  ]
+}

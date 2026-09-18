@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "agentisend": {
+      "type": "http",
+      "url": "https://api.agentisend.com/mcp",
+      "headers": {
+        "Authorization": "Bearer ${AGENTISEND_API_KEY}"
+      }
+    }
+  }
+}

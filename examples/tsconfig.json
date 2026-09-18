@@ -1,0 +1,18 @@
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "noEmit": true
+  },
+  "include": [
+    "ai-agent-with-budget",
+    "authjs-email-provider",
+    "better-auth",
+    "express",
+    "hono",
+    "next-app-router",
+    "supabase-auth-hook",
+    "sveltekit-form-action",
+    "test"
+  ]
+}

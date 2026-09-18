@@ -1,0 +1,22 @@
+{
+  "name": "@agentisend/examples",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Runnable integration examples. Every one of them is executed against a real API by pnpm test:examples.",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@agentisend/sdk-node": "workspace:*"
+  },
+  "devDependencies": {
+    "@agentisend/api": "workspace:*",
+    "@agentisend/core": "workspace:*",
+    "@agentisend/transport": "workspace:*",
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1",
+    "fastify": "^5.12.1",
+    "hono": "^4.13.8"
+  }
+}

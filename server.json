@@ -1,0 +1,54 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.agentisend/mcp-server",
+  "title": "AgentiSend",
+  "description": "Run AgentiSend's MCP server locally over stdio, for clients that cannot speak HTTP MCP.",
+  "version": "0.1.0",
+  "websiteUrl": "https://agentisend.com/docs/guides/mcp",
+  "repository": {
+    "url": "https://github.com/fortuneflick/agentisend",
+    "source": "github",
+    "subfolder": "packages/mcp-server"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@agentisend/mcp-server",
+      "version": "0.1.0",
+      "transport": { "type": "stdio" },
+      "environmentVariables": [
+        {
+          "name": "AGENTISEND_API_KEY",
+          "description": "Your AgentiSend API key. Read from the environment only, never passed as an argument, because process arguments are visible to every other process on the machine.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "AGENTISEND_MCP_URL",
+          "description": "The hosted endpoint this launcher proxies to. Defaults to https://api.agentisend.com/mcp.",
+          "isRequired": false,
+          "isSecret": false,
+          "default": "https://api.agentisend.com/mcp",
+          "format": "string"
+        }
+      ]
+    }
+  ],
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://api.agentisend.com/mcp",
+      "headers": [
+        {
+          "name": "Authorization",
+          "description": "Bearer <your API key>. OAuth 2.1 reaches the same tools with the same ceilings.",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
