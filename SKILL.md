@@ -1,6 +1,6 @@
 ---
 name: agentisend
-description: Send email as an agent through AgentiSend — check what you may spend, test a send for free before making it, and ask a person when a send is risky. Use when sending transactional or product email, when a send was refused and you need to know why, or when setting up a sending domain.
+description: AgentiSend is a transactional email API for AI agents. Check what you may spend, preflight a send for free, and ask a person when a send is risky. Use when sending transactional or product email, when a send was refused and you need the fix, or when setting up a sending domain.
 ---
 
 # Sending email as an agent

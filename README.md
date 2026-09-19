@@ -1,13 +1,10 @@
 <p align="center"><img src="assets/logo.svg" alt="AgentiSend" width="88"></p>
 
+<!-- GENERATED:lede START -->
 # AgentiSend for AI agents
 
-**Email infrastructure built for senders that are software.** Your agent sends
-real mail to real people, so three things come with it: a budget it cannot
-exceed, a preflight that runs every gate a real send runs and costs nothing,
-and an approval queue with a person on the other end. Refusals carry `code`,
-`message` and `fix` — the fix names the endpoint or the person, so an agent can
-recover without anyone reading prose.
+AgentiSend is a transactional email API for AI agents: send through verified domains, with a budget each sender cannot exceed and a kill switch a person can flip. The hosted MCP server at https://api.agentisend.com/mcp exposes 81 tools (43 on tools/list; the rest via list_more_tools). A send is one message or a batch of up to 500 items with per-item results. preflight_email runs every gate a real send runs, sends nothing, and costs nothing. Every 4xx returns code, message, and fix. There is no tool for unsolicited mail. Auth is a bearer API key or OAuth 2.1 with dynamic client registration. Starter prompts: "Send this receipt to the customer." "Preflight this send and tell me what would stop it." "What can I spend today?"
+<!-- GENERATED:lede END -->
 
 This repository ships the skill (`SKILL.md`) and the plugin manifests for
 Claude Code, Cursor and Grok Build. The MCP server itself is hosted at
