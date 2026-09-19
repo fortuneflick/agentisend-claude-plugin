@@ -28,7 +28,7 @@ OAuth discovery. Verified against production on 2026-09-18:
 |---|---|
 | `POST https://api.agentisend.com/mcp` with no credentials | **401**, body `{"code":"missing_api_key", … ,"fix":…}` |
 | `WWW-Authenticate` on that 401 | `Bearer realm="agentisend-mcp", resource_metadata="https://api.agentisend.com/.well-known/oauth-protected-resource"` |
-| `GET https://api.agentisend.com/.well-known/oauth-protected-resource` | **200**, resource `https://api.agentisend.com/mcp`, authorization server `https://api.agentisend.com`, nine scopes advertised |
+| `GET https://api.agentisend.com/.well-known/oauth-protected-resource` | **200**, resource `https://api.agentisend.com/mcp`, authorization server `https://api.agentisend.com`, **19** scopes advertised (`segments:write`, `topics:read`, `topics:write` added with W4.9b) |
 
 Re-run before any submission:
 
@@ -38,6 +38,17 @@ curl -si -X POST https://api.agentisend.com/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | grep -i www-authenticate
 curl -s https://api.agentisend.com/.well-known/oauth-protected-resource | jq .
 ```
+
+## Live check — W4.9 catalog (2026-09-19)
+
+The hosted MCP catalogue is **69** tools. `tools/list` advertises **40**
+(`list_more_tools` and `get_email_events` join the default list; 29 sit behind
+`list_more_tools` by category). Landing
+`https://agentisend.com/docs/guides/mcp` names `list_more_tools`, `get_metrics`
+and `create_api_key`. Regenerated from platform `d51b2dd` with
+`pnpm gen:agent-skill --out` (36 generated files already matched; the install
+region does not include the tool table). This section is the reviewer note that
+the service grew; do not hand-edit generated files.
 
 ## 1. npm (the stdio launcher)
 
