@@ -214,7 +214,9 @@ Packet to have ready:
 | Support | `hello@agentisend.com` |
 | Icon | `assets/icon-192.png` |
 | Example prompts | "Send this receipt to the customer" · "What can I spend today?" · "Preflight this send and tell me what would stop it" · "Why did that message bounce?" · "Set up acme.com as a sending domain" |
-| Test account | PLACEHOLDER — a demo workspace with a verified domain, a budget, one webhook and a few sent messages, signed in without MFA |
+| Test account | Review URL (no password, no MFA): `https://api.agentisend.com/review-login?token=` + the value in `/root/agentisend-review-login.token` on the Coolify host. Lands in **AgentiSend Review Sandbox** as `reviewer@agentisend.com`. MFA is off and cannot be turned on. |
+| Positive cases | Send a receipt to `customer@example.com`; preflight that send; explain the seeded bounce; add a sending domain and read its records; add a suppression after an unsubscribe |
+| Negative cases | Send to a purchased list → refused; send over the key budget → `agent_budget_exceeded`; `get_email` with another account's id → `not_found` |
 
 ## 7. ChatGPT plugins (last)
 
@@ -241,8 +243,21 @@ Packet to have ready:
   (`get_agent_budget` stays). Other clients keep the full catalogue.
   Unsolicited mail is refused; there is no tool for it. Do not tell the
   reviewer to "upgrade", "start a trial", or "find leads".
-- **Use these test cases:** send a receipt or password-reset to a known
-  address; preflight a send; ask why a bounce happened; add a sending
-  domain; add a suppression after an unsubscribe.
+- **Demo account:** `https://api.agentisend.com/review-login?token=` + the
+  value in `/root/agentisend-review-login.token` on the Coolify host. No
+  password. MFA is off and cannot be turned on. The seeded account is
+  **AgentiSend Review Sandbox** (`reviewer@agentisend.com`): Pro trial, verified
+  domain `review.agentisend.com`, API key named Review, templates, contacts,
+  one suppression, sample sent/bounced mail, one pending approval.
+- **Use these 5 positive test cases:**
+  1. Send a receipt to `customer@example.com` from `receipts@review.agentisend.com`.
+  2. Preflight that same send (`preflight_email`) — it reads ok and costs nothing.
+  3. `explain_email` on the seeded bounce — it names the 550 mailbox-does-not-exist.
+  4. `create_domain` then `get_domain` and read DKIM + SPF records.
+  5. `add_suppression` for an address that just unsubscribed.
+- **Use these 3 negative test cases:**
+  1. A send whose body names a purchased or scraped list is refused (`invalid_parameter`; unsolicited mail is refused).
+  2. A send over the key's budget is refused (`agent_budget_exceeded`). A pending approval is already in Approvals so the reviewer can see a held send.
+  3. `get_email` with a message id from another account returns `not_found`.
 - **Do not use these:** find leads; buy more emails; upgrade; start a trial;
   cold email; import a scraped list.

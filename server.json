@@ -3,7 +3,7 @@
   "name": "com.agentisend/mcp-server",
   "title": "AgentiSend",
   "description": "Run AgentiSend's MCP server locally over stdio, for clients that cannot speak HTTP MCP.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "websiteUrl": "https://agentisend.com/docs/guides/mcp",
   "repository": {
     "url": "https://github.com/fortuneflick/agentisend",
@@ -15,7 +15,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@agentisend/mcp-server",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "transport": { "type": "stdio" },
       "environmentVariables": [
         {
