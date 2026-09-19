@@ -196,10 +196,22 @@ Packet to have ready:
   featured demo account **without MFA**; exactly 5 positive and 3 negative test
   cases; privacy, terms and support URLs; tested in Developer Mode on desktop
   and mobile.
-- **Owner step before submitting:** the challenge route does not exist yet. Ask
-  for the token in the portal, then it is served from the API next to the other
-  `/.well-known` documents — a code change in the monorepo, not a DNS record.
+- **Owner step before submitting:** ask the portal for the domain-verification
+  token and set Coolify env `OPENAI_APPS_CHALLENGE` (runtime, literal). The
+  route is live: `GET https://api.agentisend.com/.well-known/openai-apps-challenge`
+  answers 200 `text/plain` with that token, or 404 when unset.
 - Policy: OpenAI's guidelines ban unsolicited-contact tooling and in-plugin
-  upselling. AgentiSend has no cold-outreach feature at any tier (that is a
-  product rule, not a plan limit) and the tools never mention plans or credits.
-  Say both plainly in the review notes.
+  upselling of digital goods. ChatGPT / OpenAI sessions (`clientInfo.name`
+  matching `chatgpt` or `openai`, observed name `openai-mcp`) get a
+  commerce-free MCP surface: `agentisend://errors` omits `billing_*` /
+  `plan_*` / `trial_*` / `subscription_*` / `stripe_*` / `term_not_on_sale`;
+  any remaining `fix` that names Upgrade / checkout / billing is replaced
+  with a console-only sentence; `set_limit` is hidden from `tools/list`
+  (`get_agent_budget` stays). Other clients keep the full catalogue.
+  Unsolicited mail is refused; there is no tool for it. Do not tell the
+  reviewer to "upgrade", "start a trial", or "find leads".
+- **Use these test cases:** send a receipt or password-reset to a known
+  address; preflight a send; ask why a bounce happened; add a sending
+  domain; add a suppression after an unsubscribe.
+- **Do not use these:** find leads; buy more emails; upgrade; start a trial;
+  cold email; import a scraped list.
