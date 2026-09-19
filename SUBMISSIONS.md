@@ -39,6 +39,16 @@ curl -si -X POST https://api.agentisend.com/mcp \
 curl -s https://api.agentisend.com/.well-known/oauth-protected-resource | jq .
 ```
 
+## Live check — wait_for_domain (2026-09-19)
+
+The hosted MCP catalogue is **81** tools (`wait_for_domain` added). `tools/list`
+advertises **43**. REST twin `GET /domains/:id/wait`. Regenerated from platform
+`5df81dd` with `pnpm gen:agent-skill --out` (wrote `skills/agentisend/references/errors.md`
+for `dns_unreachable` / `dkim_key_mismatch` / `domain_check_window_expired` and
+the richer `domain_not_verified`). Landing
+`https://agentisend.com/docs/guides/mcp` heading `Tools (81)` names
+`wait_for_domain`.
+
 ## Live check — W4.9c automations (2026-09-19)
 
 The hosted MCP catalogue is **80** tools (nine automations twins:
@@ -163,7 +173,7 @@ owner runs. Keep the ed25519 private key offline; it is what republishing needs.
 ```json
 {
   "name": "agentisend",
-  "description": "Send email from an agent with a budget it cannot exceed, a free preflight that runs every gate a real send runs, and refusals that name the fix.",
+  "description": "AgentiSend is a transactional email API for AI agents: send through verified domains, with a budget each sender cannot exceed and a kill switch a person can flip. The hosted MCP server at https://api.agentisend.com/mcp exposes 80 tools (42 on tools/list; the rest via list_more_tools). A send is one message or a batch of up to 500 items with per-item results. preflight_email runs every gate a real send runs, sends nothing, and costs nothing. Every 4xx returns code, message, and fix. There is no tool for unsolicited mail. Auth is a bearer API key or OAuth 2.1 with dynamic client registration. Starter prompts: \"Send this receipt to the customer.\" \"Preflight this send and tell me what would stop it.\" \"What can I spend today?\"",
   "category": "productivity",
   "source": {
     "source": "url",
@@ -177,7 +187,9 @@ owner runs. Keep the ed25519 private key offline; it is what republishing needs.
     "agentisend mcp",
     "agentisend transactional email",
     "agentisend agent budget",
-    "agentisend deliverability"
+    "agentisend deliverability",
+    "agentisend mcp server",
+    "agentisend mcp connector"
   ],
   "domains": ["agentisend.com"]
 }
@@ -204,9 +216,10 @@ Packet to have ready:
 |---|---|
 | Name | AgentiSend |
 | Slug | `agentisend` |
-| Tagline (≤55 chars) | `Email your agent can send without supervision` (45) |
-| Description | The README's opening two paragraphs |
-| Categories | Productivity, Developer tools |
+| Tagline (≤55 chars) | `Transactional email API for AI agents` (37) |
+| Description | The `PLUGIN_DESCRIPTION` in the platform `packages/agent-skills/src/listing.ts` (README lede, every manifest, `server.json`) |
+| Categories (Claude directory) | Developer Tools, Productivity, Sales And Marketing |
+| Categories (Cursor marketplace) | Productivity, Infrastructure, Agent Orchestration |
 | MCP server URL | `https://api.agentisend.com/mcp` |
 | Auth | OAuth 2.1 with dynamic client registration (verified above) |
 | Docs URL | `https://agentisend.com/docs/guides/mcp` |

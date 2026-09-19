@@ -23,7 +23,10 @@ stopped you.
 | `open_tracking_on_transactional` | no | Leave open tracking off for receipts, password resets, and alerts. Turn it on for broadcasts if you want open counts. |
 | `domain_already_exists` | no | Use the existing domain from GET /domains, or remove it with DELETE /domains/:id first. |
 | `domain_verified_elsewhere` | no | Contact support to move the domain. We cannot verify it here while another account already has it verified. |
-| `domain_not_verified` | no | Add the DNS records shown by GET /domains/:id, then call POST /domains/:id/verify. |
+| `domain_not_verified` | no | If it is pending, publish the required records from GET /domains/:id; checks continue for 72 hours. Test now by sending to an address ending in @simulator.agentisend.com. If it is not registered, POST /domains first. If it is failed, GET /domains/:id names the record to fix, then POST /domains/:id/verify to reopen the window. |
+| `dns_unreachable` | wait 300s | Wait; checks continue on their own. Retry this call after the seconds given in Retry-After. |
+| `dkim_key_mismatch` | no | Replace that TXT record with the value shown on GET /domains/:id, then POST /domains/:id/verify. |
+| `domain_check_window_expired` | no | Publish the required records from GET /domains/:id, then POST /domains/:id/verify. That reopens the window for another 72 hours. |
 | `service_unavailable` | no | Retry after the seconds given in Retry-After. If it persists beyond a few minutes, check the public status page (GET /status) for the affected component. |
 | `account_suspended` | no | Suspensions follow the published enforcement policy (docs/TRUST-SAFETY). Contact support to appeal; unused prepaid balance is refunded on termination. |
 | `account_sandboxed` | no | Verify the recipient domain with POST /domains + POST /domains/:id/verify, or file POST /trust/appeal for a person to review this account. |
