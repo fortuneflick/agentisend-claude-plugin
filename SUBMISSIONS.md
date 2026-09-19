@@ -39,6 +39,18 @@ curl -si -X POST https://api.agentisend.com/mcp \
 curl -s https://api.agentisend.com/.well-known/oauth-protected-resource | jq .
 ```
 
+## Live check — W4.9c automations (2026-09-19)
+
+The hosted MCP catalogue is **80** tools (nine automations twins:
+`list_automations`, `get_automation`, `create_automation`, `update_automation`,
+`enable_automation`, `disable_automation`, `list_automation_versions`,
+`list_automation_runs`, `get_automation_run`). `tools/list` still advertises
+**42**. Those nine sit behind `list_more_tools` category `automations`. No
+`delete_automation` (REST has no DELETE). `/events*` ingest is not a tool.
+Regenerated from platform `2361e62` with `pnpm gen:agent-skill --out` (36
+generated files already matched; the install region does not include the tool
+table). Landing `https://agentisend.com/docs/guides/mcp` heading `Tools (80)`.
+
 ## Live check — W4.7 OAuth grants (2026-09-19)
 
 The hosted MCP catalogue is **71** tools (`list_oauth_grants`,
