@@ -39,6 +39,14 @@ curl -si -X POST https://api.agentisend.com/mcp \
 curl -s https://api.agentisend.com/.well-known/oauth-protected-resource | jq .
 ```
 
+## Live check — W4.7 OAuth grants (2026-09-19)
+
+The hosted MCP catalogue is **71** tools (`list_oauth_grants`,
+`revoke_oauth_grant` added). `tools/list` advertises **42**. Those two grant
+tools are a person's: a key is refused with `human_action_required`. Regenerated
+from platform `75c829c` with `pnpm gen:agent-skill --out` (36 generated files
+already matched; the install region does not include the tool table).
+
 ## Live check — W4.9 catalog (2026-09-19)
 
 The hosted MCP catalogue is **69** tools. `tools/list` advertises **40**
