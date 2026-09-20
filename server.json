@@ -2,7 +2,7 @@
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.fortuneflick/agentisend",
   "title": "AgentiSend",
-  "description": "Transactional email API for AI agents: verified domains, a per-sender budget, and a kill switch.",
+  "description": "Transactional email API: verified domains, a message log, budgets, and refusals that name the fix.",
   "version": "0.1.2",
   "websiteUrl": "https://agentisend.com/docs/guides/mcp",
   "repository": {

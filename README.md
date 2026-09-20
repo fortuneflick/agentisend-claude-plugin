@@ -3,7 +3,7 @@
 <!-- GENERATED:lede START -->
 # AgentiSend for AI agents
 
-AgentiSend is a transactional email API for AI agents: send through verified domains, with a budget each sender cannot exceed and a kill switch a person can flip. The hosted MCP server at https://api.agentisend.com/mcp exposes 81 tools (43 on tools/list; the rest via list_more_tools). A send is one message or a batch of up to 500 items with per-item results. preflight_email runs every gate a real send runs, sends nothing, and costs nothing. Every 4xx returns code, message, and fix. There is no tool for unsolicited mail. Auth is a bearer API key or OAuth 2.1 with dynamic client registration. Starter prompts: "Send this receipt to the customer." "Preflight this send and tell me what would stop it." "What can I spend today?"
+AgentiSend is a transactional email API: send through verified domains with a message log, budgets, a preflight and refusals that name the fix; built so AI agents can send on your behalf. The hosted MCP server at https://api.agentisend.com/mcp exposes 81 tools (43 on tools/list; the rest via list_more_tools). A send is one message or a batch of up to 500 items with per-item results. preflight_email runs every gate a real send runs, sends nothing, and costs nothing. Every 4xx returns code, message, and fix. There is no tool for unsolicited mail. Auth is a bearer API key or OAuth 2.1 with dynamic client registration. Starter prompts: "Send this receipt to the customer." "Preflight this send and tell me what would stop it." "What can I spend today?"
 <!-- GENERATED:lede END -->
 
 This repository ships the skill (`SKILL.md`) and the plugin manifests for
