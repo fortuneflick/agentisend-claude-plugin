@@ -274,3 +274,10 @@ Packet to have ready:
   3. `get_email` with a message id from another account returns `not_found`.
 - **Do not use these:** find leads; buy more emails; upgrade; start a trial;
   cold email; import a scraped list.
+- **Demo Recording URL:** https://agentisend.com/demo/agentisend-chatgpt-demo.mp4
+  (GIF twin: https://agentisend.com/demo/agentisend-chatgpt-demo.gif).
+- **If the first connect lists 0 tools:** disconnect and reconnect once.
+  `initialize` as `openai-mcp` then `tools/list` on that session lists the
+  catalogue. A `tools/list` with no session is a refusal, not an empty list.
+  The empty first list was observed in ChatGPT Developer Mode and cleared on
+  the second initialize.
