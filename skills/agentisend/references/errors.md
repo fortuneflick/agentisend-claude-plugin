@@ -41,6 +41,7 @@ stopped you.
 | `csrf_origin_rejected` | no | Call the API with an API key (Authorization: Bearer …) instead of a session cookie, or make the request from the console. Create a key in the console under Settings, API keys. |
 | `mfa_required` | no | Finish signing in at /verify with a code from your authenticator app, or one of your recovery codes. Manage the second factor in the console under Settings, Security. |
 | `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day Pro trial still starts. |
+| `charge_not_this_account` | no | Open the account and refund a payment listed on it. |
 | `plan_not_purchasable` | no | Pass one of the tier ids listed under `plans` by GET /billing/plan (starter, pro, scale) to POST /billing/checkout. |
 | `plan_required` | no | A person on this account chooses a plan, or starts the 14-day Pro trial, in the console under Settings → Billing. Simulation sends keep working meanwhile. |
 | `trial_already_used` | no | Choose a plan in the console under Settings → Billing; POST /billing/checkout starts the payment. |
