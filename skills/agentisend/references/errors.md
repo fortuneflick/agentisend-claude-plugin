@@ -27,6 +27,9 @@ stopped you.
 | `dns_unreachable` | wait 300s | Wait; checks continue on their own. Retry this call after the seconds given in Retry-After. |
 | `dkim_key_mismatch` | no | Replace that TXT record with the value shown on GET /domains/:id, then POST /domains/:id/verify. |
 | `domain_check_window_expired` | no | Publish the required records from GET /domains/:id, then POST /domains/:id/verify. That reopens the window for another 72 hours. |
+| `return_path_subdomain_in_use` | no | Pass return_path_subdomain: "bounce" on POST /domains. send is the default; bounce is the alternative when send is taken. |
+| `spf_conflict` | no | Replace the existing TXT with the merged record we return. This is advice: the domain can verify and send without the apex SPF once the return-path records resolve. |
+| `spf_lookup_limit` | no | Do not add a second SPF record. Rely on the return-path SPF, which is required anyway. The apex SPF is advice and never blocks sending. |
 | `service_unavailable` | no | Retry after the seconds given in Retry-After. If it persists beyond a few minutes, check the public status page (GET /status) for the affected component. |
 | `account_suspended` | no | Suspensions follow the published enforcement policy (docs/TRUST-SAFETY). Contact support to appeal; unused prepaid balance is refunded on termination. |
 | `account_sandboxed` | no | Verify the recipient domain with POST /domains + POST /domains/:id/verify, or file POST /trust/appeal for a person to review this account. |
