@@ -68,7 +68,7 @@ beforeAll(async () => {
 
   transport = new FakeTransport();
   queue = new InProcessSendQueue({
-    handler: makeSendJobHandler({ db: testDb.db, transport }),
+    handler: makeSendJobHandler({ db: testDb.db, transport, allowUnverifiedDomain: true }),
   });
   app = buildApp({ logLevel: 'silent', db: testDb.db, transport });
   registerRoutes(app, {
