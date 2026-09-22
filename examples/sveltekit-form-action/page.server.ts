@@ -9,7 +9,7 @@
  * `import type { Actions } from './$types'` and `export const actions = {…} satisfies Actions`.
  * It is written structurally here so this directory typechecks on its own.
  */
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

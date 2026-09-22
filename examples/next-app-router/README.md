@@ -16,7 +16,7 @@ recipient, so a retried request replays the first send instead of mailing someon
 ## Run it
 
 ```bash
-pnpm add @agentisend/sdk-node
+pnpm add agentisend
 # copy route.ts to app/api/send/route.ts and actions.ts to app/actions.ts
 curl -X POST localhost:3000/api/send -H 'content-type: application/json' -d '{"email":"you@example.com","name":"Ada"}'
 ```

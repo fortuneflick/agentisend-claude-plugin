@@ -14,7 +14,7 @@
  * that resolves it. Nothing was delivered, and the agent is told what to do
  * rather than left to guess.
  */
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 function mailFrom(): string {
   const from = process.env.MAIL_FROM;

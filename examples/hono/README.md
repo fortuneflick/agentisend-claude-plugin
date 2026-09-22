@@ -17,6 +17,6 @@ On Workers, read the key from the binding instead of `process.env` and pass it t
 ## Run it
 
 ```bash
-pnpm add hono @agentisend/sdk-node
+pnpm add hono agentisend
 curl -X POST localhost:8787/send -H 'content-type: application/json' -d '{"email":"you@example.com"}'
 ```

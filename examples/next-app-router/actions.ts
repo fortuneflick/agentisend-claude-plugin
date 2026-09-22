@@ -6,7 +6,7 @@
  * that this directory typechecks without the Next.js compiler.
  */
 // 'use server';
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

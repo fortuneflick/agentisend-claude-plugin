@@ -24,6 +24,10 @@ stopped you.
 | `domain_already_exists` | no | Use the existing domain from GET /domains, or remove it with DELETE /domains/:id first. |
 | `domain_verified_elsewhere` | no | Contact support to move the domain. We cannot verify it here while another account already has it verified. |
 | `domain_not_verified` | no | If it is pending, publish the required records from GET /domains/:id; checks continue for 72 hours. Test now by sending to an address ending in @simulator.agentisend.com. If it is not registered, POST /domains first. If it is failed, GET /domains/:id names the record to fix, then POST /domains/:id/verify to reopen the window. |
+| `onboarding_recipient_not_a_member` | no | Send to a member sign-in address, or verify a domain with POST /domains and send from that domain. |
+| `onboarding_shape_refused` | no | Omit those fields, or verify a domain with POST /domains and send from that domain. |
+| `onboarding_daily_cap_reached` | wait 86400s | Wait until tomorrow (UTC), or verify a domain with POST /domains and send from that domain. |
+| `onboarding_sender_unavailable` | no | Send to an address ending in @simulator.agentisend.com, or verify a domain with POST /domains and send from that domain. |
 | `dns_unreachable` | wait 300s | Wait; checks continue on their own. Retry this call after the seconds given in Retry-After. |
 | `dkim_key_mismatch` | no | Replace that TXT record with the value shown on GET /domains/:id, then POST /domains/:id/verify. |
 | `domain_check_window_expired` | no | Publish the required records from GET /domains/:id, then POST /domains/:id/verify. That reopens the window for another 72 hours. |
@@ -40,10 +44,10 @@ stopped you.
 | `human_action_required` | no | Ask whoever runs this account to do it in the console. Scoping the key differently does not change the answer, and retrying fails the same way. |
 | `csrf_origin_rejected` | no | Call the API with an API key (Authorization: Bearer …) instead of a session cookie, or make the request from the console. Create a key in the console under Settings, API keys. |
 | `mfa_required` | no | Finish signing in at /verify with a code from your authenticator app, or one of your recovery codes. Manage the second factor in the console under Settings, Security. |
-| `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day Pro trial still starts. |
+| `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day trial still starts. |
 | `charge_not_this_account` | no | Open the account and refund a payment listed on it. |
 | `plan_not_purchasable` | no | Pass one of the tier ids listed under `plans` by GET /billing/plan (starter, pro, scale) to POST /billing/checkout. |
-| `plan_required` | no | A person on this account chooses a plan, or starts the 14-day Pro trial, in the console under Settings → Billing. Simulation sends keep working meanwhile. |
+| `plan_required` | no | A person on this account chooses a plan, or starts the 14-day Starter trial, in the console under Settings → Billing. Simulation sends keep working meanwhile. |
 | `trial_already_used` | no | Choose a plan in the console under Settings → Billing; POST /billing/checkout starts the payment. |
 | `plan_already_active` | no | Nothing to start. GET /billing/plan shows the plan, and plan changes are made in the console under Settings → Billing. |
 | `term_not_on_sale` | no | Pass one of the terms listed under `terms_on_sale` by GET /billing/plan (monthly and yearly) to POST /billing/checkout. |

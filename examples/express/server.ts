@@ -5,7 +5,7 @@
  * or started from a separate entry point.
  */
 import express, { type Express } from 'express';
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

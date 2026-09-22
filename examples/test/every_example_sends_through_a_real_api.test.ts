@@ -1,3 +1,4 @@
+import { spawn, spawnSync } from 'node:child_process';
 import { createHmac, randomUUID } from 'node:crypto';
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
@@ -314,6 +315,41 @@ describe('Express', () => {
     expect((await owner.emails.get(id)).subject).toBe('Your order shipped');
   });
 });
+
+/**
+ * The Python twin of the agent example, run as a user would run it: a child
+ * process with the same three environment variables and nothing installed.
+ * Skips cleanly when python3 is missing so the JS suite still means something.
+ */
+const python = spawnSync('python3', ['--version']);
+describe.skipIf(python.error !== undefined || python.status !== 0)(
+  'An agent with a budget and a loop guard, in Python',
+  () => {
+    it('mints a scoped key, sets a ceiling, sends, and is refused on the fourth repeat', async () => {
+      const script = new URL('../python-agent-with-budget/agent.py', import.meta.url).pathname;
+      // Asynchronous on purpose: the API the script talks to runs in this
+      // process, and a synchronous spawn would block the event loop it needs.
+      const proc = await new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+        const child = spawn('python3', [script], { env: process.env });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+        child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+        child.on('close', (status) => done({ status, stdout, stderr }));
+      });
+      expect(proc.stderr, proc.stderr).toBe('');
+      expect(proc.status).toBe(0);
+      const lines = proc.stdout.trim().split('\n').map((line) => JSON.parse(line) as Record<string, unknown>);
+      expect(lines[0]?.step).toBe('send');
+      const refusal = lines.at(-1)!;
+      expect(refusal.step).toBe('refused');
+      expect(refusal.code).toBe('approval_required');
+      expect(refusal.sends_before_refusal).toBe(3);
+      expect(String(refusal.fix)).toMatch(/agent-actions/);
+      expect((await owner.emails.get(String(lines[0]!.id))).to).toContain('customer-py@example.com');
+    });
+  },
+);
 
 describe('An agent with a budget and a loop guard', () => {
   it('mints a scoped key, caps it, sends, and is refused when it loops', async () => {

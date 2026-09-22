@@ -10,7 +10,7 @@
  * fetch.
  */
 import { createHmac, timingSafeEqual } from 'node:crypto';
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

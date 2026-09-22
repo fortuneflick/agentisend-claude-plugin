@@ -7,7 +7,7 @@
  * Throwing makes Auth.js report the sign-in as failed, which is what you want:
  * a magic link that was never sent should never look like one that was.
  */
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

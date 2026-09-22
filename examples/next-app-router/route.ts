@@ -6,7 +6,7 @@
  * row: every later question ("did it arrive?", "why was it held?") is answered
  * by GET /emails/:id and GET /emails/:id/explain with that id.
  */
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

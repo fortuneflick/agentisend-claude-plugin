@@ -5,7 +5,7 @@
  * fetch with no Node built-ins, so this file is the same on all of them.
  */
 import { Hono } from 'hono';
-import { AgentiSend, AgentiSendError } from '@agentisend/sdk-node';
+import { AgentiSend, AgentiSendError } from 'agentisend';
 
 const agentisend = new AgentiSend();
 

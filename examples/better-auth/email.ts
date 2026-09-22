@@ -7,7 +7,7 @@
  * yours. They are exported separately here so they can be spread into
  * `betterAuth({ ... })` and tested on their own.
  */
-import { AgentiSend } from '@agentisend/sdk-node';
+import { AgentiSend } from 'agentisend';
 
 const agentisend = new AgentiSend();
 
