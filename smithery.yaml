@@ -6,15 +6,13 @@ startCommand:
   url: https://api.agentisend.com/mcp
   configSchema:
     type: object
-    required:
-      - apiKey
     properties:
       apiKey:
         type: string
         title: "AgentiSend API key"
         description: "Create one in the console at https://console.agentisend.com; the key is sent as a bearer token."
         x-from:
-          header: x-agentisend-api-key
+          header: apiKey
         x-to:
           header: Authorization
   exampleConfig:
