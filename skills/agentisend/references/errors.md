@@ -39,6 +39,7 @@ stopped you.
 | `account_sandboxed` | no | Verify the recipient domain with POST /domains + POST /domains/:id/verify, or file POST /trust/appeal for a person to review this account. |
 | `trust_throttled` | no | Send volume is temporarily capped because deliverability metrics crossed a published threshold. Check GET /trust/standing for the metric and value, file POST /trust/appeal if this is unexpected. |
 | `suppressed_recipient` | no | GET /suppressions says which address and why. A hard bounce you have fixed can be cleared with DELETE /suppressions/:id; an unsubscribe or a spam complaint cannot — that address asked not to be contacted. |
+| `recipient_blocklisted` | no | Send to a different address. An address ending in @simulator.agentisend.com is never blocked. |
 | `missing_api_key` | no | Sign in at /login so the console sends its session cookie, or create a key with POST /api-keys and send "Authorization: Bearer as_...". |
 | `session_required` | no | Sign in to the console, then retry. API keys cannot call this route. |
 | `human_action_required` | no | Ask whoever runs this account to do it in the console. Scoping the key differently does not change the answer, and retrying fails the same way. |
@@ -47,9 +48,7 @@ stopped you.
 | `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day trial still starts. |
 | `charge_not_this_account` | no | Open the account and refund a payment listed on it. |
 | `plan_not_purchasable` | no | Pass one of the tier ids listed under `plans` by GET /billing/plan (starter, pro, scale) to POST /billing/checkout. |
-| `plan_required` | no | A person on this account chooses a plan, or starts the 14-day Starter trial, in the console under Settings → Billing. Simulation sends keep working meanwhile. |
-| `trial_already_used` | no | Choose a plan in the console under Settings → Billing; POST /billing/checkout starts the payment. |
-| `plan_already_active` | no | Nothing to start. GET /billing/plan shows the plan, and plan changes are made in the console under Settings → Billing. |
+| `daily_limit_reached` | no | Wait for 00:00 UTC, or upgrade in Settings → Billing — every paid plan has no daily cap. |
 | `term_not_on_sale` | no | Pass one of the terms listed under `terms_on_sale` by GET /billing/plan (monthly and yearly) to POST /billing/checkout. |
 | `subscription_active` | no | Change plans with POST /billing/portal — the Stripe customer portal prorates the change and shows the amount before it is confirmed. Checkout is only for an account with no subscription. |
 | `billing_customer_missing` | no | Start a subscription with POST /billing/checkout first; the customer portal only exists once a checkout has run. |
