@@ -45,9 +45,11 @@ stopped you.
 | `human_action_required` | no | Ask whoever runs this account to do it in the console. Scoping the key differently does not change the answer, and retrying fails the same way. |
 | `csrf_origin_rejected` | no | Call the API with an API key (Authorization: Bearer …) instead of a session cookie, or make the request from the console. Create a key in the console under Settings, API keys. |
 | `mfa_required` | no | Finish signing in at /verify with a code from your authenticator app, or one of your recovery codes. Manage the second factor in the console under Settings, Security. |
-| `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and the 14-day trial still starts. |
+| `billing_not_configured` | no | The operator must set STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET (docs/STRIPE.md §4). Until then nothing can be bought; GET /billing/plan still answers and every account stays on Free. |
 | `charge_not_this_account` | no | Open the account and refund a payment listed on it. |
 | `plan_not_purchasable` | no | Pass one of the tier ids listed under `plans` by GET /billing/plan (starter, pro, scale) to POST /billing/checkout. |
+| `overage_cap_reached` | no | Raise the overage ceiling or move up a plan in Settings → Billing, or wait until the reset date in this error. |
+| `overage_not_on_plan` | no | Choose a paid plan in Settings → Billing, then turn overage on. |
 | `daily_limit_reached` | no | Wait for 00:00 UTC, or upgrade in Settings → Billing — every paid plan has no daily cap. |
 | `term_not_on_sale` | no | Pass one of the terms listed under `terms_on_sale` by GET /billing/plan (monthly and yearly) to POST /billing/checkout. |
 | `subscription_active` | no | Change plans with POST /billing/portal — the Stripe customer portal prorates the change and shows the amount before it is confirmed. Checkout is only for an account with no subscription. |
