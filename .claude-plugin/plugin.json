@@ -12,6 +12,9 @@
   "repository": "https://github.com/fortuneflick/agentisend-claude-plugin",
   "license": "MIT",
   "privacyPolicyUrl": "https://agentisend.com/privacy",
+  "termsOfServiceUrl": "https://agentisend.com/terms",
+  "supportUrl": "https://agentisend.com/docs/guides/support",
+  "documentationUrl": "https://agentisend.com/docs/guides/mcp",
   "keywords": [
     "MCP server",
     "MCP connector",
