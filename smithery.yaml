@@ -16,4 +16,4 @@ startCommand:
         x-to:
           header: Authorization
   exampleConfig:
-    apiKey: as_0000000000000000000000000000000000000000
+    apiKey: as_YOUR_API_KEY

@@ -3,7 +3,7 @@
 <!-- GENERATED:lede START -->
 # AgentiSend for AI agents
 
-AgentiSend is a transactional email API: send through verified domains with a message log, budgets, a preflight and refusals that name the fix; built so AI agents can send on your behalf. The hosted MCP server at https://api.agentisend.com/mcp exposes 82 tools (44 on tools/list; the rest via list_more_tools). A send is one message or a batch of up to 500 items with per-item results. preflight_email runs every gate a real send runs, sends nothing, and costs nothing. Every 4xx returns code, message, and fix. There is no tool for unsolicited mail. Auth is a bearer API key or OAuth 2.1 with dynamic client registration. Starter prompts: "Send this receipt to the customer." "Preflight this send and tell me what would stop it." "What can I spend today?"
+AgentiSend is a transactional email API for AI agents: send receipts, password resets, sign-in codes and alerts from your own verified domain, with a message log, spend budgets, a free preflight and refusals that name the fix. The hosted MCP server at https://api.agentisend.com/mcp exposes 82 tools (44 on tools/list; the rest via list_more_tools) for sending, domain setup, templates, contacts, broadcasts, inbound replies, webhooks and delivery logs. A send is one message or a batch of up to 500 items with per-item results. preflight_email runs every gate a real send runs, sends nothing, and costs nothing. Every refusal returns a code, a message and the fix. A person can hold risky sends for approval, cap what each agent spends, and stop all sending with a kill switch. There is no tool for unsolicited mail. Sign in with OAuth 2.1 and dynamic client registration, or use an API key. Starter prompts: "Send this receipt to the customer." "Preflight this send and tell me what would stop it." "What can I spend today?"
 <!-- GENERATED:lede END -->
 
 This repository ships the skill (`SKILL.md`) and the plugin manifests for
@@ -176,8 +176,9 @@ than your first send.
 - **Credentials:** a bearer API key (`as_…`) minted at
   https://console.agentisend.com, or OAuth 2.1 sign-in — both reach the same
   tools with the same ceilings. This repository contains no keys and never asks
-  for one in chat. The Claude Code manifest reads `AGENTISEND_API_KEY` from
-  your environment rather than writing it to a config file.
+  for one in chat. The Claude plugin's server entry carries no key: Claude
+  Code, claude.ai and Cowork sign you in through OAuth the first time a tool
+  runs.
 - **Optional local launcher:** clients that only speak stdio run the published
   npm package `@agentisend/mcp-server`, which proxies to that same endpoint.
 - **No telemetry.** Nothing here phones home.

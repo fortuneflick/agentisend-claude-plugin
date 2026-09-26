@@ -225,7 +225,7 @@ Packet to have ready:
 | Docs URL | `https://agentisend.com/docs/guides/mcp` |
 | Privacy URL | `https://agentisend.com/privacy` |
 | Support | `hello@agentisend.com` |
-| Icon | `assets/icon-192.png` |
+| Icon | assets/icon-192.png (192 px PNG) |
 | Example prompts | "Send this receipt to the customer" · "What can I spend today?" · "Preflight this send and tell me what would stop it" · "Why did that message bounce?" · "Set up acme.com as a sending domain" |
 | Test account | Review URL (no password, no MFA): `https://api.agentisend.com/review-login?token=` + the value in `/root/agentisend-review-login.token` on the Coolify host. Lands in **AgentiSend Review Sandbox** as `reviewer@agentisend.com`. MFA is off and cannot be turned on. |
 | Positive cases | Send a receipt to `customer@example.com`; preflight that send; explain the seeded bounce; add a sending domain and read its records; add a suppression after an unsubscribe |
