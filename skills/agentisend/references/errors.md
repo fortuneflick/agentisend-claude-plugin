@@ -22,6 +22,9 @@ stopped you.
 | `domain_field_immutable` | no | Add a new domain with POST /domains. PATCH /domains/:id accepts click_tracking, open_tracking, and tracking_subdomain only. |
 | `open_tracking_on_transactional` | no | Leave open tracking off for receipts, password resets, and alerts. Turn it on for broadcasts if you want open counts. |
 | `domain_already_exists` | no | Use the existing domain from GET /domains, or remove it with DELETE /domains/:id first. |
+| `mailbox_provider_domain` | no | Add a domain you own with POST /domains, such as acme.com or mail.acme.com, and send from an address on it. |
+| `template_name_taken` | no | Choose another name, or edit the existing template with PATCH /templates/:id. GET /templates lists them with their ids. |
+| `template_in_use` | no | Archive each broadcast named in the message with POST /broadcasts/:id/archive, then delete the template again. |
 | `domain_verified_elsewhere` | no | Contact support to move the domain. We cannot verify it here while another account already has it verified. |
 | `domain_not_verified` | no | If it is pending, publish the required records from GET /domains/:id; checks continue for 72 hours. Test now by sending to an address ending in @simulator.agentisend.com. If it is not registered, POST /domains first. If it is failed, GET /domains/:id names the record to fix, then POST /domains/:id/verify to reopen the window. |
 | `onboarding_recipient_not_a_member` | no | Send to a member sign-in address, or verify a domain with POST /domains and send from that domain. |
@@ -80,9 +83,10 @@ stopped you.
 | `monthly_quota_exceeded` | no | Upgrade the plan or wait for the cycle reset; see GET /usage for what this account has spent. |
 | `rate_limiter_unavailable` | wait 5s | Retry in a few seconds. Nothing was sent and nothing was changed — writes are refused rather than run unmetered against a shared sending reputation. |
 | `rate_limit_exceeded` | wait 60s | Back off and retry honoring the Retry-After header. |
-| `approval_required` | no | It is waiting in the console approvals inbox; GET /agent-actions shows it and what it says. A person decides — the key that asked cannot approve itself. |
+| `approval_required` | no | Do not send it again: a person approves or rejects it in the console under Agents → Approvals, and approving sends it — the message then appears in GET /emails. action_id in this error names the held send; the key that asked cannot approve itself, and a retry waits on the same approval. |
 | `trust_paused` | no | Review reasons via GET /trust/standing, then file an appeal via POST /trust/appeal. |
 | `kill_switch_active` | no | Read GET /trust/standing for why it was paused. Only a person signed in to the console can resume it; the paused key cannot resume itself. |
+| `sending_paused_everywhere` | wait 300s | Retry the same request, with the same Idempotency-Key, after the seconds given in Retry-After. Scheduled sends wait and go out once sending resumes. |
 | `internal_server_error` | no | Retry ONCE after a short pause, with the same Idempotency-Key so the retry cannot double-send. If it fails again, stop retrying and report the x-request-id from the response — that id is what identifies this exact failure in support. |
 | `support_ticket_not_found` | no | Open Support in the console and pick a request from the list, or start a new one. |
 | `support_closed` | no | Start a new request from Support in the console. If this one was resolved in the last 14 days, reopen it first. |

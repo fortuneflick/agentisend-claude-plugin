@@ -19,5 +19,5 @@ python3 agent.py
 ```
 
 Two JSON lines: the first send with its message id and the budget, then the refusal with
-`approval_required`, how many sends went through before it, and the `fix` naming the call that
-resolves it.
+`approval_required`, how many sends went through before it, and the `fix` saying who decides the
+held send and where.

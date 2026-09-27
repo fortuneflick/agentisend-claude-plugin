@@ -345,7 +345,7 @@ describe.skipIf(python.error !== undefined || python.status !== 0)(
       expect(refusal.step).toBe('refused');
       expect(refusal.code).toBe('approval_required');
       expect(refusal.sends_before_refusal).toBe(3);
-      expect(String(refusal.fix)).toMatch(/agent-actions/);
+      expect(String(refusal.fix)).toMatch(/Agents → Approvals/);
       expect((await owner.emails.get(String(lines[0]!.id))).to).toContain('customer-py@example.com');
     });
   },

@@ -10,9 +10,9 @@
  * The last part of the script is the point. An agent stuck in a retry loop
  * sends the same message again and again; after the third near-identical send
  * inside the window the API refuses the fourth, holds it for a human to
- * approve, and returns `approval_required` with a `fix` that names the call
- * that resolves it. Nothing was delivered, and the agent is told what to do
- * rather than left to guess.
+ * approve, and returns `approval_required` with the held action's id and a
+ * `fix` that says who decides it and where. Nothing was delivered, and the
+ * agent is told what to do rather than left to guess.
  */
 import { AgentiSend, AgentiSendError } from 'agentisend';
 

@@ -10,8 +10,9 @@ requests work from FastAPI, Django, a LangChain tool or a cron job:
 The last part is the point. An agent stuck in a retry loop sends the same
 message again and again; after the third near-identical send inside the window
 the API refuses the fourth, holds it for a person to approve, and answers
-`approval_required` with a `fix` that names the call which resolves it. Nothing
-was delivered, and the agent is told what to do rather than left to guess.
+`approval_required` with the held action's id and a `fix` that says who decides
+it and where. Nothing was delivered, and the agent is told what to do rather
+than left to guess.
 
 Environment: AGENTISEND_API_KEY (your own key, full access; the agent never
 sees it), MAIL_FROM (an address on a domain you have verified), and optionally
