@@ -15,15 +15,19 @@ is the in-memory fake. An example that stops working fails the build.
 | [express](express/) | A `POST /send` route on an app you can mount anywhere. |
 | [ai-agent-with-budget](ai-agent-with-budget/) | A scoped key, a daily ceiling, and the loop guard refusing the fourth identical send. |
 | [python-agent-with-budget](python-agent-with-budget/) | The same agent in Python with nothing installed: three requests with the standard library. |
+| [vercel-ai-sdk](vercel-ai-sdk/) | A `sendEmail` tool for the AI SDK: the agent's own budgeted key, one idempotency key per purpose, and a refusal returned to the model as `code` and `fix`. |
+| [langchain](langchain/) | The same tool for LangChain.js, built with `tool()` from `@langchain/core/tools`. |
 
 ## What they have in common
 
 - `AGENTISEND_API_KEY` and `MAIL_FROM` are the only variables every example needs.
   `AGENTISEND_BASE_URL` is optional and defaults to `https://api.agentisend.com`.
-- The key's account needs a plan before real mail goes out: the 14-day Starter trial (no card,
-  Starter's monthly inclusion, once per account) or a paid plan. Without one, a real send is refused
-  with `plan_required` and simulation sends still work, so you can wire an example up first. Every
-  example is also a guide at `agentisend.com/docs/guides/<name>`, with the same file inlined.
+- Every account starts on the Free plan, with no card. A real send needs a verified domain: before
+  that, `POST /emails` delivers only from the onboarding address to the account's own sign-in
+  addresses, and any recipient at `simulator.agentisend.com` is accepted, costs nothing and reaches
+  nobody — so you can wire an example up first. When the plan's inclusion is spent a send is refused
+  with `plan_limit_reached`; on Free the daily cap answers `daily_limit_reached`. Every example is
+  also a guide at `agentisend.com/docs/guides/<name>`, with the same file inlined.
 - The key is read on the server. None of these examples put it anywhere a browser can reach.
 - Every mutating call carries an `Idempotency-Key` derived from the thing being done
   (`welcome/user@example.com`), not from the moment, so a retry after a timeout replays the first

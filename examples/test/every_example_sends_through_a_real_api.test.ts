@@ -16,7 +16,11 @@ import { accounts, apiKeys, ERROR_CATALOG } from '@agentisend/core';
 import { LIVE_TEST_PLAN, createTestDb, type TestDb } from '@agentisend/core/testing';
 import { FakeTransport } from '@agentisend/transport';
 import type { FastifyInstance } from 'fastify';
+import { ToolInputParsingException } from '@langchain/core/tools';
 import { AgentiSend, type Email } from '@agentisend/sdk-node';
+// Type-only, so the modules still load after the server is up, with the agent's key in the environment.
+import type { sendEmail as vercelSendEmail } from '../vercel-ai-sdk/send-email-tool.js';
+import type { sendEmail as langchainSendEmail } from '../langchain/send-email-tool.js';
 
 /**
  * Every example in `examples/` is executed here against a real API — real
@@ -378,6 +382,115 @@ describe('An agent with a budget and a loop guard', () => {
     );
     expect(key?.permission).toBe('sending_access');
     expect((await owner.limits.get(report.apiKeyId)).budget_per_period).toBe(50);
+  });
+});
+
+/**
+ * The two agent-framework tools are the agent's half of ai-agent-with-budget:
+ * each holds a key scoped to sending with a budget on it, and each is imported
+ * with that key in the environment, exactly as the agent's process is
+ * deployed — the owner's key never reaches the module. The budget is one, so
+ * the third distinct send is the refusal the tool exists to hand back.
+ */
+async function agentKeyWithBudget(name: string, budget: number): Promise<string> {
+  const key = await owner.apiKeys.create({ name, permission: 'sending_access' });
+  await owner.limits.update(key.id, { budget_per_period: budget, period: 'daily' });
+  return key.token;
+}
+
+async function importAsAgent<T>(agentToken: string, load: () => Promise<T>): Promise<T> {
+  process.env.AGENTISEND_API_KEY = agentToken;
+  try {
+    return await load();
+  } finally {
+    process.env.AGENTISEND_API_KEY = token;
+  }
+}
+
+const TICKET_UPDATE = {
+  subject: 'Ticket 4182 — we are looking into it',
+  text: 'Someone from support will reply within the hour.',
+  purpose: 'ticket-4182-update',
+};
+
+describe('A Vercel AI SDK tool', () => {
+  let sendEmail: typeof vercelSendEmail;
+  // What the SDK passes alongside the model's arguments; nothing here reads it.
+  const call = { toolCallId: 'call_1', messages: [], context: {} };
+  const message = { to: 'vercel-agent@example.com', ...TICKET_UPDATE };
+
+  beforeAll(async () => {
+    const agentToken = await agentKeyWithBudget('vercel-ai-sdk-agent', 1);
+    ({ sendEmail } = await importAsAgent(agentToken, () => import('../vercel-ai-sdk/send-email-tool.js')));
+  });
+
+  it('execute sends through the agent key, and the same call again replays the first send', async () => {
+    const first = await sendEmail.execute(message, call);
+    const email = await acceptedFor(message.to);
+    expect(first).toEqual({ sent: true, id: email.id });
+    expect(email.subject).toBe(TICKET_UPDATE.subject);
+    // Same purpose, same recipient: the idempotency key replays the first
+    // response, so a model retrying a timeout cannot mail the person twice.
+    expect(await sendEmail.execute(message, call)).toEqual(first);
+  });
+
+  it('a refusal reaches the model as code and fix, not as an exception', async () => {
+    // The budget of one is spent by the send above; a different message is refused.
+    const result = await sendEmail.execute(
+      { ...message, subject: 'Ticket 4182 — closed', purpose: 'ticket-4182-closed' },
+      call,
+    );
+    expect(result).toEqual({
+      sent: false,
+      code: 'agent_budget_exceeded',
+      fix: ERROR_CATALOG.agent_budget_exceeded.fix,
+    });
+    // The fix the model reads names who can raise the ceiling: a person, not the key.
+    expect(ERROR_CATALOG.agent_budget_exceeded.fix).toMatch(/person/);
+    const accepted = (await owner.emails.list({ limit: 100 })).data.filter((e) => e.to.includes(message.to));
+    expect(accepted).toHaveLength(1);
+  });
+});
+
+describe('A LangChain.js tool', () => {
+  let sendEmail: typeof langchainSendEmail;
+  const message = { to: 'langchain-agent@example.com', ...TICKET_UPDATE };
+
+  beforeAll(async () => {
+    const agentToken = await agentKeyWithBudget('langchain-agent', 1);
+    ({ sendEmail } = await importAsAgent(agentToken, () => import('../langchain/send-email-tool.js')));
+  });
+
+  it('invoke sends through the agent key, and the same call again replays the first send', async () => {
+    const first = await sendEmail.invoke(message);
+    const email = await acceptedFor(message.to);
+    expect(first).toEqual({ sent: true, id: email.id });
+    expect(email.subject).toBe(TICKET_UPDATE.subject);
+    expect(await sendEmail.invoke(message)).toEqual(first);
+  });
+
+  it('a refusal reaches the model as code and fix, not as an exception', async () => {
+    const result = await sendEmail.invoke({
+      ...message,
+      subject: 'Ticket 4182 — closed',
+      purpose: 'ticket-4182-closed',
+    });
+    expect(result).toEqual({
+      sent: false,
+      code: 'agent_budget_exceeded',
+      fix: ERROR_CATALOG.agent_budget_exceeded.fix,
+    });
+    const accepted = (await owner.emails.list({ limit: 100 })).data.filter((e) => e.to.includes(message.to));
+    expect(accepted).toHaveLength(1);
+  });
+
+  it('a call with no recipient is refused by the schema before the API is reached', async () => {
+    const before = (await owner.emails.list({ limit: 100 })).data.length;
+    const { to: _to, ...withoutRecipient } = message;
+    await expect(sendEmail.invoke(withoutRecipient as never)).rejects.toBeInstanceOf(
+      ToolInputParsingException,
+    );
+    expect((await owner.emails.list({ limit: 100 })).data.length).toBe(before);
   });
 });
 

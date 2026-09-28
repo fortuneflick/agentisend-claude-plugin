@@ -2,7 +2,10 @@
   "extends": "../tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "noEmit": true
+    "noEmit": true,
+    // Nothing here is a library, so no .d.ts is ever written; with emit on, tsc
+    // would refuse an exported tool whose type lives in a transitive package.
+    "declaration": false
   },
   "include": [
     "ai-agent-with-budget",
@@ -10,9 +13,11 @@
     "better-auth",
     "express",
     "hono",
+    "langchain",
     "next-app-router",
     "supabase-auth-hook",
     "sveltekit-form-action",
-    "test"
+    "test",
+    "vercel-ai-sdk"
   ]
 }

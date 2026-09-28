@@ -9,7 +9,10 @@
   },
   "dependencies": {
     "@agentisend/sdk-node": "workspace:*",
-    "agentisend": "workspace:*"
+    "@langchain/core": "^1.2.12",
+    "agentisend": "workspace:*",
+    "ai": "^7.0.116",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@agentisend/api": "workspace:*",
