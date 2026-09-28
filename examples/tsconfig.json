@@ -5,16 +5,25 @@
     "noEmit": true,
     // Nothing here is a library, so no .d.ts is ever written; with emit on, tsc
     // would refuse an exported tool whose type lives in a transitive package.
-    "declaration": false
+    "declaration": false,
+    // NestJS's decorators, including the parameter decorators (`@Body()`),
+    // are the legacy TypeScript kind. Harmless to every other example.
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": [
     "ai-agent-with-budget",
+    "astro",
     "authjs-email-provider",
     "better-auth",
     "express",
+    "fastify",
     "hono",
     "langchain",
+    "nestjs",
     "next-app-router",
+    "nuxt",
+    "react-router",
     "supabase-auth-hook",
     "sveltekit-form-action",
     "test",

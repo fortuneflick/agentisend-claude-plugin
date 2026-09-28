@@ -2,6 +2,7 @@ import { spawn, spawnSync } from 'node:child_process';
 import { createHmac, randomUUID } from 'node:crypto';
 import type { AddressInfo } from 'node:net';
 import type { Server } from 'node:http';
+import { existsSync, mkdirSync } from 'node:fs';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import {
   FakeResolver,
@@ -18,6 +19,10 @@ import { FakeTransport } from '@agentisend/transport';
 import type { FastifyInstance } from 'fastify';
 import { ToolInputParsingException } from '@langchain/core/tools';
 import { AgentiSend, type Email } from '@agentisend/sdk-node';
+import { createApp, toWebHandler } from 'h3';
+import { NestFactory } from '@nestjs/core';
+import type { INestApplication } from '@nestjs/common';
+import type { ActionFunctionArgs } from 'react-router';
 // Type-only, so the modules still load after the server is up, with the agent's key in the environment.
 import type { sendEmail as vercelSendEmail } from '../vercel-ai-sdk/send-email-tool.js';
 import type { sendEmail as langchainSendEmail } from '../langchain/send-email-tool.js';
@@ -321,6 +326,176 @@ describe('Express', () => {
 });
 
 /**
+ * The bad-address path of every framework below: the handler answers it
+ * itself, so the count of accepted messages does not move.
+ */
+async function acceptedCount(): Promise<number> {
+  return (await owner.emails.list({ limit: 100 })).data.length;
+}
+
+describe('Fastify', () => {
+  it('POST /send returns the message id', async () => {
+    const { app: fastify } = await import('../fastify/server.js');
+    const response = await fastify.inject({
+      method: 'POST',
+      url: '/send',
+      payload: { email: 'fastify@example.com', invoiceId: 'INV-1042' },
+    });
+    expect(response.statusCode, response.body).toBe(200);
+    const { id } = response.json<{ id: string }>();
+    const email = await acceptedFor('fastify@example.com');
+    expect(email.id).toBe(id);
+    expect(email.subject).toBe('Invoice INV-1042');
+  });
+
+  it('a malformed address is refused by the route schema before the API is called', async () => {
+    const { app: fastify } = await import('../fastify/server.js');
+    const before = await acceptedCount();
+    const response = await fastify.inject({
+      method: 'POST',
+      url: '/send',
+      payload: { email: 'not-an-address', invoiceId: 'INV-1043' },
+    });
+    expect(response.statusCode).toBe(400);
+    expect(await acceptedCount()).toBe(before);
+  });
+});
+
+describe('Astro API route', () => {
+  function post(email: string): Request {
+    const form = new FormData();
+    form.set('email', email);
+    return new Request('http://localhost/api/waitlist', { method: 'POST', body: form });
+  }
+
+  it('POST confirms the sign-up and returns the message id', async () => {
+    const { POST, prerender } = await import('../astro/waitlist.js');
+    expect(prerender).toBe(false);
+    const response = await POST({ request: post('astro@example.com') });
+    expect(response.status).toBe(200);
+    const { id } = (await response.json()) as { id: string };
+    const email = await acceptedFor('astro@example.com');
+    expect(email.id).toBe(id);
+    expect(email.subject).toBe('You are on the waitlist');
+  });
+
+  it('a malformed address is refused before the API is called', async () => {
+    const { POST } = await import('../astro/waitlist.js');
+    const before = await acceptedCount();
+    const response = await POST({ request: post('astro at example.com') });
+    expect(response.status).toBe(400);
+    expect(await acceptedCount()).toBe(before);
+  });
+});
+
+describe('Nuxt server route', () => {
+  // The route is mounted on a bare h3 app, which is what Nitro does with
+  // everything under server/, and driven through h3's own web adapter.
+  async function send(body: unknown): Promise<Response> {
+    const { default: handler } = await import('../nuxt/send.post.js');
+    const web = toWebHandler(createApp().use('/api/send', handler));
+    return web(
+      new Request('http://localhost/api/send', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      }),
+    );
+  }
+
+  it('POST /api/send confirms the booking and returns the message id', async () => {
+    const response = await send({ email: 'nuxt@example.com', bookingId: 'BK-2291' });
+    expect(response.status).toBe(200);
+    const { id } = (await response.json()) as { id: string };
+    const email = await acceptedFor('nuxt@example.com');
+    expect(email.id).toBe(id);
+    expect(email.subject).toBe('Your booking is confirmed');
+  });
+
+  it('a malformed address is refused before the API is called', async () => {
+    const before = await acceptedCount();
+    const response = await send({ email: 'nuxt@', bookingId: 'BK-2292' });
+    expect(response.status).toBe(400);
+    expect(await acceptedCount()).toBe(before);
+  });
+});
+
+describe('React Router action', () => {
+  /** What the framework passes an action; this one reads only `request`. */
+  function args(email: string): ActionFunctionArgs {
+    const form = new FormData();
+    form.set('email', email);
+    const request = new Request('http://localhost/report', { method: 'POST', body: form });
+    return {
+      request,
+      url: new URL(request.url),
+      pattern: '/report',
+      params: {},
+      context: {} as ActionFunctionArgs['context'],
+    };
+  }
+
+  it('the action emails the link and returns the message id', async () => {
+    const { action } = await import('../react-router/report.js');
+    const result = await action(args('react-router@example.com'));
+    expect(result.init?.status ?? 200).toBe(200);
+    const email = await acceptedFor('react-router@example.com');
+    expect(result.data).toEqual({ id: email.id });
+    expect(email.subject).toBe('Your copy of the report');
+  });
+
+  it('a malformed address is refused before the API is called', async () => {
+    const { action } = await import('../react-router/report.js');
+    const before = await acceptedCount();
+    const result = await action(args('react-router.example.com'));
+    expect(result.init?.status).toBe(400);
+    expect(await acceptedCount()).toBe(before);
+  });
+});
+
+describe('NestJS', () => {
+  let nest: INestApplication;
+  let origin: string;
+
+  beforeAll(async () => {
+    const { AppModule } = await import('../nestjs/app.module.js');
+    nest = await NestFactory.create(AppModule, { logger: false });
+    await nest.listen(0, '127.0.0.1');
+    origin = `http://127.0.0.1:${(nest.getHttpServer().address() as AddressInfo).port}`;
+  });
+
+  afterAll(async () => {
+    await nest.close();
+  });
+
+  function confirm(body: unknown): Promise<Response> {
+    return fetch(`${origin}/orders/confirmation`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  }
+
+  it('POST /orders/confirmation returns the message id, and a retry replays it', async () => {
+    const response = await confirm({ email: 'nestjs@example.com', orderId: 'A-1042' });
+    expect(response.status).toBe(200);
+    const { id } = (await response.json()) as { id: string };
+    const email = await acceptedFor('nestjs@example.com');
+    expect(email.id).toBe(id);
+    expect(email.subject).toBe('Order A-1042 confirmed');
+    // Same order: the idempotency key replays the first send.
+    expect(await (await confirm({ email: 'nestjs@example.com', orderId: 'A-1042' })).json()).toEqual({ id });
+  });
+
+  it('a malformed address is refused before the API is called', async () => {
+    const before = await acceptedCount();
+    const response = await confirm({ email: 'nestjs@example', orderId: 'A-1043' });
+    expect(response.status).toBe(400);
+    expect(await acceptedCount()).toBe(before);
+  });
+});
+
+/**
  * The Python twin of the agent example, run as a user would run it: a child
  * process with the same three environment variables and nothing installed.
  * Skips cleanly when python3 is missing so the JS suite still means something.
@@ -354,6 +529,152 @@ describe.skipIf(python.error !== undefined || python.status !== 0)(
     });
   },
 );
+
+/**
+ * The Python web frameworks: FastAPI, Flask and Django. Each `app.py` is the
+ * file the guide inlines; the `run.py` beside it drives the app through that
+ * framework's own test client and prints one JSON line per request, so what
+ * runs is the framework's real routing, parsing and response code.
+ *
+ * The frameworks are pinned in examples/requirements.txt. When the python3 on
+ * PATH already has those versions (CI installs them), it is used as is;
+ * otherwise they are installed once into a virtualenv under node_modules/.cache
+ * and reused. A failed install fails this block: python3 is there, so a skip
+ * would hide a broken requirements file.
+ */
+const REQUIREMENTS = new URL('../requirements.txt', import.meta.url).pathname;
+const VENV = new URL('../../node_modules/.cache/agentisend-python-examples', import.meta.url).pathname;
+const VENV_PYTHON = `${VENV}/${process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'}`;
+const SDK_PYTHON = new URL('../../packages/sdk-python', import.meta.url).pathname;
+
+/** Exits 0 only when every pinned requirement is installed at its pinned version. */
+const HAS_REQUIREMENTS = `
+import sys, importlib.metadata as meta
+for line in open(sys.argv[1]):
+    line = line.split("#")[0].strip()
+    if not line:
+        continue
+    name, _, version = line.partition("==")
+    try:
+        installed = meta.version(name)
+    except meta.PackageNotFoundError:
+        sys.exit(1)
+    if installed != version:
+        sys.exit(1)
+`;
+
+function hasRequirements(interpreter: string): boolean {
+  return spawnSync(interpreter, ['-c', HAS_REQUIREMENTS, REQUIREMENTS]).status === 0;
+}
+
+function mustRun(command: string, args: string[]): void {
+  const result = spawnSync(command, args, { encoding: 'utf8', timeout: 540_000 });
+  if (result.error !== undefined || result.status !== 0) {
+    throw new Error(
+      `${command} ${args.join(' ')} failed: ${String(result.error ?? '')}\n${result.stdout ?? ''}\n${result.stderr ?? ''}`,
+    );
+  }
+}
+
+/** A python3 that has the pinned frameworks, installing them into the cached venv if needed. */
+function frameworkPython(): string {
+  if (hasRequirements('python3')) return 'python3';
+  if (existsSync(VENV_PYTHON) && hasRequirements(VENV_PYTHON)) return VENV_PYTHON;
+  mkdirSync(VENV, { recursive: true });
+  mustRun('python3', ['-m', 'venv', '--clear', VENV]);
+  mustRun(VENV_PYTHON, ['-m', 'pip', 'install', '--quiet', '--disable-pip-version-check', '-r', REQUIREMENTS]);
+  if (!hasRequirements(VENV_PYTHON)) {
+    throw new Error(`pip reported success but ${VENV} lacks a version pinned in examples/requirements.txt`);
+  }
+  return VENV_PYTHON;
+}
+
+const PYTHON_FRAMEWORKS = [
+  {
+    name: 'FastAPI',
+    dir: 'fastapi',
+    to: 'fastapi@example.com',
+    // FastAPI's refused request is the same address with a different name.
+    refusedTo: 'fastapi@example.com',
+    subject: 'Welcome',
+  },
+  {
+    name: 'Flask',
+    dir: 'flask',
+    to: 'flask@example.com',
+    refusedTo: 'flask-other@example.com',
+    subject: 'Receipt for order 1042',
+  },
+  {
+    name: 'Django',
+    dir: 'django',
+    to: 'django@example.com',
+    refusedTo: 'django-other@example.com',
+    subject: 'Order 2042 has shipped',
+  },
+] as const;
+
+describe.skipIf(python.error !== undefined || python.status !== 0)('Python web frameworks', () => {
+  let interpreter: string;
+
+  beforeAll(() => {
+    interpreter = frameworkPython();
+  }, 600_000);
+
+  it.each(PYTHON_FRAMEWORKS)(
+    '$name: POST /send sends once, replays a retry, validates the address, and returns code and fix on a refusal',
+    async ({ dir, to, refusedTo, subject }) => {
+      const script = new URL(`../${dir}/run.py`, import.meta.url).pathname;
+      // Asynchronous for the same reason as above: the API runs in this process.
+      const proc = await new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+        const child = spawn(interpreter, [script], {
+          cwd: new URL(`../${dir}/`, import.meta.url).pathname,
+          // No __pycache__ left in examples/: the directory is published as is.
+          env: { ...process.env, PYTHONPATH: SDK_PYTHON, PYTHONDONTWRITEBYTECODE: '1' },
+        });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+        child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+        child.on('close', (status) => done({ status, stdout, stderr }));
+      });
+      expect(proc.status, proc.stderr).toBe(0);
+      const steps = Object.fromEntries(
+        proc.stdout
+          .trim()
+          .split('\n')
+          .map((line) => JSON.parse(line) as Record<string, unknown>)
+          .map((line) => [String(line.step), line]),
+      );
+
+      // Accepted, and the id the route returned is the message the API holds.
+      expect(steps.send?.status).toBe(200);
+      const email = await acceptedFor(to);
+      expect(steps.send?.id).toBe(email.id);
+      expect(email.subject).toBe(subject);
+      expect(email.from).toContain(FROM);
+
+      // The same request again replays the first send.
+      expect(steps.retry).toEqual(steps.send ? { ...steps.send, step: 'retry' } : undefined);
+
+      // A malformed address never reaches the API.
+      expect(steps.invalid?.status).toBe(400);
+      expect(String(steps.invalid?.error)).toMatch(/one address/);
+
+      // The refusal arrives as the API's own code and fix, with its status.
+      const mismatch = ERROR_CATALOG.idempotency_payload_mismatch;
+      expect(steps.refused).toEqual({
+        step: 'refused',
+        status: mismatch.status,
+        code: mismatch.code,
+        fix: mismatch.fix,
+      });
+      const all = (await owner.emails.list({ limit: 100 })).data;
+      expect(all.filter((e) => e.to.includes(to))).toHaveLength(1);
+      expect(all.filter((e) => e.to.includes(refusedTo))).toHaveLength(to === refusedTo ? 1 : 0);
+    },
+  );
+});
 
 describe('An agent with a budget and a loop guard', () => {
   it('mints a scoped key, caps it, sends, and is refused when it loops', async () => {

@@ -1,0 +1,9 @@
+# The web frameworks the Python examples run under. The `agentisend` package
+# itself has no dependencies; the test harness puts packages/sdk-python on
+# PYTHONPATH. Pinned so the examples run against the versions they were
+# written for; the harness installs these into a cached virtualenv when the
+# interpreter on PATH does not already have them.
+fastapi==0.141.1
+httpx==0.28.1
+flask==3.1.3
+django==5.2.17

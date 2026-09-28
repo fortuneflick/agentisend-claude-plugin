@@ -15,8 +15,16 @@ is the in-memory fake. An example that stops working fails the build.
 | [express](express/) | A `POST /send` route on an app you can mount anywhere. |
 | [ai-agent-with-budget](ai-agent-with-budget/) | A scoped key, a daily ceiling, and the loop guard refusing the fourth identical send. |
 | [python-agent-with-budget](python-agent-with-budget/) | The same agent in Python with nothing installed: three requests with the standard library. |
+| [fastapi](fastapi/) | A FastAPI `POST /send` route: the address checked first, one idempotency key per recipient, a refusal answered as `code` and `fix`. |
+| [flask](flask/) | The same route in Flask, sending one receipt per order. |
+| [django](django/) | A Django view with its settings inline, sending one shipping notice per order. |
 | [vercel-ai-sdk](vercel-ai-sdk/) | A `sendEmail` tool for the AI SDK: the agent's own budgeted key, one idempotency key per purpose, and a refusal returned to the model as `code` and `fix`. |
 | [langchain](langchain/) | The same tool for LangChain.js, built with `tool()` from `@langchain/core/tools`. |
+| [fastify](fastify/) | A `POST /send` route whose JSON schema refuses a bad address before the handler runs. |
+| [astro](astro/) | An API route that confirms a waitlist sign-up from a plain form post. |
+| [nuxt](nuxt/) | A Nitro server route that sends one booking confirmation per booking. |
+| [react-router](react-router/) | A React Router (formerly Remix) `action` that emails a download link to the person who asked. |
+| [nestjs](nestjs/) | A controller and a service sending one order confirmation per order. |
 
 ## What they have in common
 
