@@ -2,8 +2,8 @@
 
 One `POST /send` route that sends an order receipt with an idempotency key derived from the order,
 checks the address before calling the API, and answers a refusal with its `code` and `fix`.
-`run.py` drives it through Flask's `test_client()`; the examples suite runs that against a real API
-on every build.
+`run.py` drives it through Flask's `test_client()`; the examples suite runs that against a local
+AgentiSend server.
 
 ## Environment
 

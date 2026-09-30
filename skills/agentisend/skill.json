@@ -18,6 +18,7 @@
         "text-file",
         "tag",
         "scheduled-at",
+        "timezone",
         "idempotency-key"
       ]
     },
@@ -67,7 +68,7 @@
     },
     {
       "name": "receiving listen",
-      "summary": "Stream inbound messages as NDJSON, one JSON object per line.",
+      "summary": "Not open yet: stream inbound messages as NDJSON, one JSON object per line.",
       "flags": [
         "interval",
         "limit",

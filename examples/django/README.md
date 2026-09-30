@@ -4,7 +4,7 @@ One view that sends a shipping notice from a POST, with an idempotency key deriv
 checks the address before calling the API, and answers a refusal with its `code` and `fix`. The
 settings are inline through `settings.configure`, so the file runs without a project; in a project,
 `send` goes in `views.py` and the path in `urls.py`. `run.py` drives it through Django's test
-`Client`; the examples suite runs that against a real API on every build.
+`Client`; the examples suite runs that against a local AgentiSend server.
 
 ## Environment
 

@@ -1,7 +1,7 @@
 # An agent with a budget and a loop guard, in Python
 
 The same three calls as the Node example, from a Python script with no dependencies beyond the
-standard library: a key scoped to sending, a daily ceiling on it, and the loop guard refusing the
+standard library: a key scoped to sending, a ceiling on it, and the loop guard refusing the
 fourth near-identical send and holding it for a person.
 
 ## Environment

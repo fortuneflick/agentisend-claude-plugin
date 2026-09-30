@@ -11,8 +11,11 @@ three are one call each.
 ## Before anything else: what may you spend?
 
 ```
-agentisend doctor
+npx agentisend doctor
 ```
+
+That runs the CLI without installing it; `npm i -g agentisend` installs the
+`agentisend` command for good. Either way it reads `AGENTISEND_API_KEY`.
 
 Answers, in order: is there a key, does the API answer, is this key paused, is
 there budget left, is any domain verified, what is the account's standing.

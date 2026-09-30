@@ -3,6 +3,11 @@
 Generated from the CLI command table. Options not listed here are refused
 before anything runs, so a typo cannot become a send with a field missing.
 
+## Install
+
+`npx agentisend doctor` runs the CLI without installing it. `npm i -g agentisend`
+installs the `agentisend` command. It reads the key from `AGENTISEND_API_KEY`.
+
 ## Global options
 
 - `--json`
@@ -22,7 +27,7 @@ codes: 0 ok, 1 the API refused, 2 you made a mistake.
 
 Send one email. Use - with --text-file/--html-file to read the body from stdin.
 
-Options: `--from`, `--to`, `--cc`, `--bcc`, `--reply-to`, `--subject`, `--html`, `--text`, `--html-file`, `--text-file`, `--tag`, `--scheduled-at`, `--idempotency-key`
+Options: `--from`, `--to`, `--cc`, `--bcc`, `--reply-to`, `--subject`, `--html`, `--text`, `--html-file`, `--text-file`, `--tag`, `--scheduled-at`, `--timezone`, `--idempotency-key`
 
 ### `agentisend emails get`
 
@@ -58,7 +63,7 @@ Options: `--secret`, `--forward-to`, `--port`, `--verify-only`
 
 ### `agentisend receiving listen`
 
-Stream inbound messages as NDJSON, one JSON object per line.
+Not open yet: stream inbound messages as NDJSON, one JSON object per line.
 
 Options: `--interval`, `--limit`, `--to`, `--once`
 

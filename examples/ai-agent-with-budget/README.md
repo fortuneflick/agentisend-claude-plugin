@@ -1,6 +1,6 @@
 # An agent with a budget and a loop guard
 
-A Node script that mints a key scoped to sending only, puts a daily ceiling of 50 emails on it,
+A Node script that mints a key scoped to sending only, puts a ceiling of 50 emails in 30 days on it,
 hands that key to an agent, and then lets the agent loop. After three near-identical sends to the
 same recipient inside the hour the API refuses the fourth, holds it for a human to approve, and
 returns `approval_required` with the held action's id and a `fix` that says who decides it and
@@ -24,7 +24,7 @@ Output:
 
 ```
 agent key       8f0c…
-daily budget    50 emails
+budget          50 emails in 30 days
 first send      3a6b…
 sends allowed   3
 refused with    approval_required (HTTP 403)

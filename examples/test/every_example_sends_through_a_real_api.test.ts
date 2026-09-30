@@ -531,6 +531,36 @@ describe.skipIf(python.error !== undefined || python.status !== 0)(
 );
 
 /**
+ * DOCSRESEND-4: the quickstart's Python block is this file, byte for byte, so
+ * it runs here the way a reader runs it: a child process, the environment
+ * variables the page names, and nothing installed.
+ */
+describe.skipIf(python.error !== undefined || python.status !== 0)('Send one email, in Python', () => {
+  it('posts to /emails with an idempotency key and prints the message id', async () => {
+    const script = new URL('../python-send/send.py', import.meta.url).pathname;
+    const run = () =>
+      new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+        const child = spawn('python3', [script], { env: process.env });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+        child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+        child.on('close', (status) => done({ status, stdout, stderr }));
+      });
+    const first = await run();
+    expect(first.stderr, first.stderr).toBe('');
+    expect(first.status).toBe(0);
+    const id = first.stdout.trim();
+    const email = await owner.emails.get(id);
+    expect(email.to).toContain('someone@example.com');
+    expect(email.from).toContain(FROM);
+    // Run it again: the idempotency key replays the first send.
+    const second = await run();
+    expect(second.stdout.trim()).toBe(id);
+  });
+});
+
+/**
  * The Python web frameworks: FastAPI, Flask and Django. Each `app.py` is the
  * file the guide inlines; the `run.py` beside it drives the app through that
  * framework's own test client and prints one JSON line per request, so what
@@ -676,6 +706,7 @@ describe.skipIf(python.error !== undefined || python.status !== 0)('Python web f
   );
 });
 
+
 describe('An agent with a budget and a loop guard', () => {
   it('mints a scoped key, caps it, sends, and is refused when it loops', async () => {
     const { run } = await import('../ai-agent-with-budget/agent.js');
@@ -704,6 +735,70 @@ describe('An agent with a budget and a loop guard', () => {
     expect(key?.permission).toBe('sending_access');
     expect((await owner.limits.get(report.apiKeyId)).budget_per_period).toBe(50);
   });
+});
+
+/**
+ * DX-1: the budget guide on the plan every signup starts on. A new key on
+ * Free carries 1,000 a month, and the guide's ceiling has to tighten that
+ * from the owner's own key, or the flagship example stops at step 2 with
+ * `human_action_required`. The account is inserted with the schema's
+ * defaults — no plan fields at all — exactly as a fresh account row is.
+ */
+describe('The budget guide on a Free account', () => {
+  let freeToken: string;
+
+  beforeAll(async () => {
+    const [free] = await testDb.db
+      .insert(accounts)
+      .values({ name: 'examples-free' })
+      .returning({ id: accounts.id, planTier: accounts.planTier });
+    expect(free!.planTier).toBe('free');
+    const minted = mintApiKey();
+    await testDb.db.insert(apiKeys).values({
+      accountId: free!.id,
+      name: 'examples-free',
+      permission: 'full_access',
+      tokenHash: minted.tokenHash,
+      tokenPrefix: minted.tokenPrefix,
+    });
+    freeToken = minted.token;
+  });
+
+  async function asFreeOwner<T>(work: () => Promise<T>): Promise<T> {
+    process.env.AGENTISEND_API_KEY = freeToken;
+    try {
+      return await work();
+    } finally {
+      process.env.AGENTISEND_API_KEY = token;
+    }
+  }
+
+  it('the Node agent sets its ceiling with the owner key and reaches the loop guard', async () => {
+    const { run } = await import('../ai-agent-with-budget/agent.js');
+    const report = await asFreeOwner(run);
+    expect(report.budgetPerPeriod).toBe(50);
+    expect(report.refusal.code).toBe('approval_required');
+  });
+
+  it.skipIf(python.error !== undefined || python.status !== 0)(
+    'the Python agent does the same',
+    async () => {
+      const script = new URL('../python-agent-with-budget/agent.py', import.meta.url).pathname;
+      const proc = await new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+        const child = spawn('python3', [script], { env: { ...process.env, AGENTISEND_API_KEY: freeToken } });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+        child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+        child.on('close', (status) => done({ status, stdout, stderr }));
+      });
+      expect(proc.stderr, proc.stderr).toBe('');
+      expect(proc.status).toBe(0);
+      const lines = proc.stdout.trim().split('\n').map((line) => JSON.parse(line) as Record<string, unknown>);
+      expect(lines[0]?.budget_per_period).toBe(50);
+      expect(lines.at(-1)?.code).toBe('approval_required');
+    },
+  );
 });
 
 /**
@@ -812,6 +907,337 @@ describe('A LangChain.js tool', () => {
       ToolInputParsingException,
     );
     expect((await owner.emails.list({ limit: 100 })).data.length).toBe(before);
+  });
+});
+
+/**
+ * DOCSRESEND-10: the stacks that have no SDK. Each program prints four JSON
+ * lines — send, retry, invalid, refused — and the refused line is the API's
+ * own idempotency_payload_mismatch, fix included.
+ *
+ * Each row's command may be absent on the machine running the suite (this
+ * repo never installs a toolchain to make a gate green): the toolchain check
+ * happens once, at collection time, and a missing command skips that row's
+ * test instead of failing it, the same convention the SDK-send tests below
+ * use for PHP and Go.
+ */
+const CLI_FRAMEWORKS = [
+  { name: 'Go', command: 'go', versionArgs: ['version'], args: ['run', '.'], cwd: 'go', to: 'go@example.com', subject: 'Your invoice' },
+  {
+    name: 'PHP',
+    command: 'php',
+    versionArgs: ['--version'],
+    args: ['send.php'],
+    cwd: 'php',
+    to: 'php@example.com',
+    subject: 'Your receipt',
+  },
+  {
+    name: 'Laravel',
+    command: 'php',
+    versionArgs: ['--version'],
+    args: ['send.php'],
+    cwd: 'laravel',
+    to: 'laravel@example.com',
+    subject: 'Your order shipped',
+  },
+  {
+    name: 'Rails',
+    command: 'ruby',
+    versionArgs: ['--version'],
+    args: ['send.rb'],
+    cwd: 'rails',
+    to: 'rails@example.com',
+    subject: 'Your receipt',
+  },
+] as const;
+
+async function runCli(
+  command: string,
+  args: readonly string[],
+  cwd: string,
+): Promise<{ status: number | null; stdout: string; stderr: string }> {
+  const scriptDir = new URL(`../${cwd}/`, import.meta.url).pathname;
+  return new Promise((done) => {
+    const child = spawn(command, [...args], {
+      cwd: scriptDir,
+      env: { ...process.env, GOPROXY: 'off', GOSUMDB: 'off' },
+    });
+    let stdout = '';
+    let stderr = '';
+    child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+    child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+    child.on('close', (status) => done({ status, stdout, stderr }));
+  });
+}
+
+function stepsFrom(stdout: string): Record<string, Record<string, unknown>> {
+  return Object.fromEntries(
+    stdout
+      .trim()
+      .split('\n')
+      .filter((line) => line.startsWith('{'))
+      .map((line) => JSON.parse(line) as Record<string, unknown>)
+      .map((line) => [String(line.step), line]),
+  );
+}
+
+async function expectFourSteps(
+  steps: Record<string, Record<string, unknown>>,
+  to: string,
+  subject: string,
+): Promise<void> {
+  // POST /emails answers 201. The SDK hides that; these clients print the status.
+  expect(steps.send?.status).toBe(201);
+  const email = await acceptedFor(to);
+  expect(steps.send?.id).toBe(email.id);
+  expect(email.subject).toBe(subject);
+  expect(email.from).toContain(FROM);
+  expect(steps.retry).toEqual(steps.send ? { ...steps.send, step: 'retry' } : undefined);
+  expect(steps.invalid?.status).toBe(400);
+  expect(String(steps.invalid?.error)).toMatch(/one address/);
+  const mismatch = ERROR_CATALOG.idempotency_payload_mismatch;
+  expect(steps.refused).toEqual({
+    step: 'refused',
+    status: mismatch.status,
+    code: mismatch.code,
+    fix: mismatch.fix,
+  });
+  expect((await owner.emails.list({ limit: 100 })).data.filter((e) => e.to.includes(to))).toHaveLength(1);
+}
+
+describe.each(CLI_FRAMEWORKS)('$name', ({ name, command, versionArgs, args, cwd, to, subject }) => {
+  it.skipIf(spawnSync(command, [...versionArgs]).status !== 0)(
+    `${name} posts to /emails, replays a retry, rejects a bad address, and returns code and fix`,
+    async () => {
+      const proc = await runCli(command, args, cwd);
+      expect(proc.status, proc.stderr).toBe(0);
+      await expectFourSteps(stepsFrom(proc.stdout), to, subject);
+    },
+  );
+});
+
+type JsonReply = { status: number; body: Record<string, unknown> };
+
+async function expectHandlerFlow(
+  post: (body: { email: string; note: string }) => Promise<JsonReply>,
+  to: string,
+  subject: string,
+): Promise<void> {
+  const sendBody = { email: to, note: 'first' };
+  const send = await post(sendBody);
+  expect(send.status).toBe(200);
+  const email = await acceptedFor(to);
+  expect(send.body.id).toBe(email.id);
+  expect(email.subject).toBe(subject);
+  expect(await post(sendBody)).toEqual(send);
+  const before = await acceptedCount();
+  const invalid = await post({ email: 'not-an-address', note: 'first' });
+  expect(invalid.status).toBe(400);
+  expect(String(invalid.body.error)).toMatch(/one address/);
+  expect(await acceptedCount()).toBe(before);
+  const refused = await post({ email: to, note: 'second' });
+  const mismatch = ERROR_CATALOG.idempotency_payload_mismatch;
+  expect(refused.status).toBe(mismatch.status);
+  expect(refused.body).toEqual({ code: mismatch.code, fix: mismatch.fix });
+  expect((await owner.emails.list({ limit: 100 })).data.filter((e) => e.to.includes(to))).toHaveLength(1);
+}
+
+describe('Node.js http server', () => {
+  let server: Server;
+  let origin: string;
+
+  beforeAll(async () => {
+    const { server: nodeServer } = await import('../nodejs/server.js');
+    server = nodeServer;
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', () => resolve());
+    });
+    origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+  });
+
+  afterAll(async () => {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  });
+
+  it('POST /send sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    await expectHandlerFlow(async (body) => {
+      const response = await fetch(`${origin}/send`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'nodejs@example.com', 'Your receipt');
+  });
+});
+
+describe('Remix action', () => {
+  it('the action sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { action } = await import('../remix/receipt.js');
+    await expectHandlerFlow(async (body) => {
+      const form = new FormData();
+      form.set('email', body.email);
+      form.set('note', body.note);
+      const response = await action({
+        request: new Request('http://localhost/receipt', { method: 'POST', body: form }),
+      });
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'remix@example.com', 'Your receipt');
+  });
+});
+
+describe.each([
+  ['Bun', '../bun/server.js', 'bun@example.com', 'Your receipt'],
+  ['Deno', '../deno/server.js', 'deno@example.com', 'Deployment finished'],
+] as const)('%s fetch handler', (_name, specifier, to, subject) => {
+  it('sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { handle } = await import(specifier);
+    await expectHandlerFlow(async (body) => {
+      const response = await handle(
+        new Request('http://localhost/', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+      );
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, to, subject);
+  });
+});
+
+/**
+ * GEO-10: each agent framework defines one tool that posts to /emails with a
+ * budgeted key. The loop is scripted — no hosted model — and the second,
+ * different message is refused with agent_budget_exceeded.
+ */
+async function expectBudgetRefusal(
+  to: string,
+  outputs: Array<{ sent: true; id: string } | { sent: false; code: string; fix: string }>,
+): Promise<void> {
+  expect(outputs[0]?.sent).toBe(true);
+  if (!outputs[0]?.sent) return;
+  const email = await acceptedFor(to);
+  expect(outputs[0].id).toBe(email.id);
+  expect(outputs.at(-1)).toEqual({
+    sent: false,
+    code: 'agent_budget_exceeded',
+    fix: ERROR_CATALOG.agent_budget_exceeded.fix,
+  });
+  expect((await owner.emails.list({ limit: 100 })).data.filter((e) => e.to.includes(to))).toHaveLength(1);
+}
+
+describe('A Vercel AI SDK agent loop', () => {
+  it('generateText sends once and hands agent_budget_exceeded back to the model', async () => {
+    const agentToken = await agentKeyWithBudget('vercel-ai-sdk-loop', 1);
+    const { run } = await importAsAgent(agentToken, () => import('../vercel-ai-sdk/loop.js'));
+    await expectBudgetRefusal('vercel-loop@example.com', await run());
+  });
+});
+
+describe('A Mastra agent loop', () => {
+  it('the tool sends once and the second call is agent_budget_exceeded', async () => {
+    const agentToken = await agentKeyWithBudget('mastra-agent', 1);
+    const { run } = await importAsAgent(agentToken, () => import('../mastra/agent.js'));
+    await expectBudgetRefusal('mastra-agent@example.com', await run());
+  });
+});
+
+const AGENT_REQUIREMENTS = new URL('../requirements-agents.txt', import.meta.url).pathname;
+const AGENT_VENV = new URL('../../node_modules/.cache/agentisend-python-agents', import.meta.url).pathname;
+const AGENT_PYTHON = `${AGENT_VENV}/${process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'}`;
+
+/**
+ * True once the pinned agent frameworks (LangChain, the OpenAI Agents SDK,
+ * CrewAI) are already installed in the cached venv. Unlike frameworkPython()
+ * above, this never installs anything itself: a cloud runner that
+ * provisions AGENT_VENV before the suite starts gets these tests; a
+ * developer machine that has not (or whose system Python is newer than a
+ * pin supports — CrewAI 1.6.1 caps at Python <3.14) gets a skip instead of a
+ * failed pip install, and DOCSRESEND-10/GEO-10 stay unexecuted for that run
+ * rather than faking a result.
+ */
+function agentPythonReady(): boolean {
+  return existsSync(AGENT_PYTHON) && spawnSync(AGENT_PYTHON, ['-c', HAS_REQUIREMENTS, AGENT_REQUIREMENTS]).status === 0;
+}
+
+const PYTHON_AGENTS = [
+  { name: 'LangChain', dir: 'langchain-python', to: 'langchain-py@example.com' },
+  { name: 'OpenAI Agents SDK', dir: 'openai-agents-sdk', to: 'openai-agents@example.com' },
+  { name: 'CrewAI', dir: 'crewai', to: 'crewai@example.com' },
+] as const;
+
+describe.skipIf(python.error !== undefined || python.status !== 0 || !agentPythonReady())(
+  'Python agent frameworks',
+  () => {
+    it.each(PYTHON_AGENTS)('$name sends once and the next call is agent_budget_exceeded', async ({ dir, to }) => {
+      const agentToken = await agentKeyWithBudget(`${dir}-agent`, 1);
+      const script = new URL(`../${dir}/tool.py`, import.meta.url).pathname;
+      const proc = await new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+        const child = spawn(AGENT_PYTHON, [script], {
+          cwd: new URL(`../${dir}/`, import.meta.url).pathname,
+          env: {
+            ...process.env,
+            AGENTISEND_API_KEY: agentToken,
+            PYTHONPATH: SDK_PYTHON,
+            PYTHONDONTWRITEBYTECODE: '1',
+          },
+        });
+        let stdout = '';
+        let stderr = '';
+        child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+        child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+        child.on('close', (status) => done({ status, stdout, stderr }));
+      });
+      expect(proc.status, `${proc.stderr}\n${proc.stdout}`).toBe(0);
+      const lines = proc.stdout
+        .trim()
+        .split('\n')
+        .filter((line) => line.startsWith('{'))
+        .map((line) => JSON.parse(line) as { sent: true; id: string } | { sent: false; code: string; fix: string });
+      await expectBudgetRefusal(to, lines);
+    });
+  },
+);
+
+describe('SDK sends', () => {
+  it('the Node package sends', async () => {
+    const { sendHello } = await import('../node-sdk-send/send.js');
+    const id = await sendHello('node-sdk@example.com');
+    expect((await owner.emails.get(id)).subject).toBe('Hello from the Node SDK');
+  });
+
+  it.skipIf(spawnSync('php', ['--version']).status !== 0)('the PHP standard-library send sends', async () => {
+    const script = new URL('../php-send/send.php', import.meta.url).pathname;
+    // Async spawn: spawnSync would block the API, which is this process.
+    const proc = await new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+      const child = spawn('php', [script], { env: { ...process.env, SEND_TO: 'php-sdk@example.com' } });
+      let stdout = '';
+      let stderr = '';
+      child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+      child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+      child.on('close', (status) => done({ status, stdout, stderr }));
+    });
+    expect(proc.stderr, proc.stderr).toBe('');
+    expect(proc.status).toBe(0);
+    const id = proc.stdout.trim();
+    expect((await owner.emails.get(id)).subject).toBe('Hello from PHP');
+  });
+
+  it.skipIf(spawnSync('go', ['version']).status !== 0)('the Go standard-library send sends', async () => {
+    const script = new URL('../go-send/send.go', import.meta.url).pathname;
+    const proc = await new Promise<{ status: number | null; stdout: string; stderr: string }>((done) => {
+      const child = spawn('go', ['run', script], { env: { ...process.env, SEND_TO: 'go-sdk@example.com' } });
+      let stdout = '';
+      let stderr = '';
+      child.stdout.on('data', (chunk: Buffer) => (stdout += chunk.toString()));
+      child.stderr.on('data', (chunk: Buffer) => (stderr += chunk.toString()));
+      child.on('close', (status) => done({ status, stdout, stderr }));
+    });
+    expect(proc.stderr, proc.stderr).toBe('');
+    expect(proc.status).toBe(0);
+    const id = proc.stdout.trim();
+    expect((await owner.emails.get(id)).subject).toBe('Hello from Go');
   });
 });
 

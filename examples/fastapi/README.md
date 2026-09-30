@@ -3,7 +3,7 @@
 One `POST /send` route that sends a welcome email with an idempotency key derived from the
 address, checks the address before calling the API, and answers a refusal with its `code` and
 `fix`. `run.py` drives it through FastAPI's `TestClient`; the examples suite runs that against a
-real API on every build.
+local AgentiSend server.
 
 ## Environment
 

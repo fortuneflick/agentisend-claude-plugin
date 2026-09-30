@@ -26,7 +26,7 @@ from django.conf import settings
 if not settings.configured:
     settings.configure(
         ROOT_URLCONF=__name__,
-        ALLOWED_HOSTS=["localhost", "127.0.0.1"],
+        ALLOWED_HOSTS=["localhost"],
         # No sessions or signed cookies here, so a per-process key is enough.
         SECRET_KEY=os.environ.get("DJANGO_SECRET_KEY") or secrets.token_urlsafe(50),
     )

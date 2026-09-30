@@ -10,6 +10,7 @@
   "dependencies": {
     "@agentisend/sdk-node": "workspace:*",
     "@langchain/core": "^1.2.12",
+    "@mastra/core": "1.71.0",
     "@nestjs/common": "^12.1.0",
     "@nestjs/core": "^12.1.0",
     "@nestjs/platform-express": "^12.1.0",
@@ -27,7 +28,7 @@
     "@agentisend/transport": "workspace:*",
     "@types/express": "^5.0.6",
     "express": "^5.2.1",
-    "fastify": "^5.12.1",
+    "fastify": "^5.12.5",
     "hono": "^4.13.8"
   }
 }

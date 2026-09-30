@@ -67,8 +67,11 @@ def main() -> int:
     key = call(owner_key, "POST", "/api-keys", {"name": "support-triage-agent-py", "permission": "sending_access"})
 
     # 2. A ceiling. The agent cannot spend past it, whatever it decides to do.
+    #    50 in the key's own window (a rolling 30 days) and 10 a minute. The
+    #    window stays as it is: an API key may only lower a limit, and 50 a
+    #    day would be up to 1,500 in 30 days, more than a new Free key's 1,000.
     limit = call(owner_key, "PATCH", f"/limits/keys/{key['id']}",
-                 {"budget_per_period": 50, "period": "daily", "rate_ceiling_per_minute": 10})
+                 {"budget_per_period": 50, "rate_ceiling_per_minute": 10})
 
     # 3. The agent, holding only its own key.
     agent_key = key["token"]

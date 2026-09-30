@@ -1,0 +1,6 @@
+# Agent frameworks the Python examples import. The `agentisend` package is
+# not installed from an index; the test harness puts packages/sdk-python on
+# PYTHONPATH. Pinned to the versions the examples were written against.
+langchain-core==1.6.5
+openai-agents==0.22.3
+crewai==1.6.1

@@ -22,11 +22,18 @@
     "langchain",
     "nestjs",
     "next-app-router",
+    "node-sdk-send",
+    "webhook-verify-node",
     "nuxt",
     "react-router",
     "supabase-auth-hook",
     "sveltekit-form-action",
     "test",
-    "vercel-ai-sdk"
+    "vercel-ai-sdk",
+    "nodejs",
+    "mastra",
+    "remix",
+    "bun",
+    "deno"
   ]
 }
