@@ -23,6 +23,7 @@ stopped you.
 | `open_tracking_on_transactional` | no | Leave open tracking off for receipts, password resets, and alerts. Turn it on for broadcasts if you want open counts. |
 | `header_replaced` | no | Nothing to do for this send. To use your own unsubscribe link, send without topic_id and set List-Unsubscribe in headers from a verified domain. |
 | `html_clipped_by_gmail` | no | Cut the HTML under 102 KB: inline less CSS, drop comments and whitespace, and link to long content instead of including it. POST /emails/lint checks it before you send. |
+| `link_domain_listed` | no | Link to a domain that is not listed, or ask the list to review the domain. Check a domain with POST /emails/preflight before sending. |
 | `domain_already_exists` | no | Use the existing domain from GET /domains. A person removes a domain in the console under Domains. |
 | `domain_blocklisted` | no | Use a domain that is not listed, or wait until the listing is removed, then POST /domains again. |
 | `mailbox_provider_domain` | no | Add a domain you own with POST /domains, such as acme.com or mail.acme.com, and send from an address on it. |
