@@ -107,6 +107,7 @@ stopped you.
 | `support_closed` | no | Start a new request from Support in the console. If this one was resolved in the last 14 days, reopen it first. |
 | `support_reopen_expired` | no | A request can be reopened within 14 days of being marked resolved. Start a new request from Support in the console. |
 | `support_merge_conflict` | no | Merge only requests from the same account. |
+| `support_reply_too_soon` | no | Reload the request and read the latest reply. To send a second reply anyway, send it again with allow_rapid_second set to true. |
 | `support_upload_rejected` | no | Attach a screenshot, PDF, CSV or log file up to 10 MB. Up to 5 files, 25 MB in total, per message. |
 | `support_upload_too_large` | no | Remove a file or send a smaller one. Each file must be 10 MB or smaller, and the message 25 MB in total. |
 | `support_attachment_expired` | no | Ask the person who uploaded it to send the file again on the request. |
