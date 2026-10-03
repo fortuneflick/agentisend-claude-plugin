@@ -3,7 +3,7 @@
   "name": "io.github.fortuneflick/agentisend",
   "title": "AgentiSend",
   "description": "Transactional email API: verified domains, a message log, budgets, and refusals that name the fix.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "websiteUrl": "https://agentisend.com/docs/guides/mcp",
   "repository": {
     "url": "https://github.com/fortuneflick/agentisend-claude-plugin",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@agentisend/mcp-server",
-      "version": "0.1.2",
+      "version": "0.1.3",
       "transport": {
         "type": "stdio"
       },
