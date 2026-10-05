@@ -99,6 +99,7 @@ stopped you.
 | `rate_limit_exceeded` | wait 60s | Back off and retry honoring the Retry-After header. |
 | `approval_required` | no | Do not send it again: a person approves or rejects it in the console under Agents → Approvals, and approving sends it — the message then appears in GET /emails. action_id in this error names the held send; the key that asked cannot approve itself, and a retry waits on the same approval. |
 | `approval_expired` | no | Send the message again if it should still go out. A hold lasts 24 hours unless the send named an earlier time. |
+| `staff_review_required` | no | Nothing else on your account is held. Write to hello@agentisend.com and name the message if it is urgent. You can cancel it instead. |
 | `trust_paused` | no | Review reasons via GET /trust/standing, then file an appeal via POST /trust/appeal. |
 | `kill_switch_active` | no | Read GET /trust/standing for why it was paused. Only a person signed in to the console can resume it; the paused key cannot resume itself. |
 | `sending_paused_everywhere` | wait 300s | Retry the same request, with the same Idempotency-Key, after the seconds given in Retry-After. Scheduled sends wait and go out once sending resumes. |
