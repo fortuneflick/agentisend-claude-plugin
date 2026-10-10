@@ -36,6 +36,8 @@ stopped you.
 | `sending_domain_blocked` | no | Send from a different domain you own. If you believe this is a mistake, contact support and name the domain. |
 | `young_domain_held` | no | Mail from your other verified domains still sends. Write to hello@agentisend.com and name this domain. |
 | `domain_verified_elsewhere` | no | Contact support to move the domain. We cannot verify it here while another account already has it verified. |
+| `domain_not_claimable` | no | A claim moves a domain that another account has verified. If no one has verified it, add it with POST /domains. If it belongs to us or is blocked, write to hello@agentisend.com and name the domain. |
+| `domain_sending_disabled` | no | Turn it back on with PATCH /domains/:id and {"capabilities": {"sending": "enabled"}}, or send from another domain. |
 | `domain_not_verified` | no | If it is pending, publish the required records from GET /domains/:id; checks continue for 72 hours. Test now by sending to an address ending in @simulator.agentisend.com. If it is not registered, POST /domains first. If it is failed, GET /domains/:id names the record to fix, then POST /domains/:id/verify to reopen the window. |
 | `onboarding_recipient_not_a_member` | no | Send to a member sign-in address, or verify a domain with POST /domains and send from that domain. |
 | `onboarding_shape_refused` | no | Omit those fields, or verify a domain with POST /domains and send from that domain. |
