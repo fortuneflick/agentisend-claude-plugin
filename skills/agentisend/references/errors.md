@@ -28,6 +28,7 @@ stopped you.
 | `domain_blocklisted` | no | Use a domain that is not listed, or wait until the listing is removed, then POST /domains again. |
 | `mailbox_provider_domain` | no | Add a domain you own with POST /domains, such as acme.com or mail.acme.com, and send from an address on it. |
 | `template_name_taken` | no | Choose another name, or edit the existing template with PATCH /templates/:id. GET /templates lists them with their ids. |
+| `template_alias_taken` | no | Choose another alias, or remove it from the template that holds it with PATCH /templates/:id and alias set to null. GET /templates lists them with their aliases. |
 | `template_in_use` | no | Archive each broadcast named in the message with POST /broadcasts/:id/archive, then delete the template again. |
 | `segment_in_use` | no | Archive each broadcast named in the message with POST /broadcasts/:id/archive, or give it another segment with PATCH /broadcasts/:id, then delete the segment again. |
 | `contact_resubscribe_required` | no | POST /contacts/:id/resubscribe with consent_source and consent_at after the person opts back in. The id can be the contact id or the email address. A spam report is not lifted by that call. |
