@@ -70,6 +70,7 @@ stopped you.
 | `daily_limit_reached` | no | Wait for 00:00 UTC, or upgrade in Settings → Billing — every paid plan has no daily cap. |
 | `term_not_on_sale` | no | Pass one of the terms listed under `terms_on_sale` by GET /billing/plan (monthly and yearly) to POST /billing/checkout. |
 | `subscription_active` | no | Change plans with POST /billing/portal. The billing portal prorates the change and shows the amount before it is confirmed. Checkout is only for an account with no subscription. |
+| `portal_change_unavailable` | no | Write to Support and we will make the change for you. |
 | `billing_customer_missing` | no | Start a subscription with POST /billing/checkout first; the customer portal only exists once a checkout has run. |
 | `stripe_signature_invalid` | no | Only the billing service calls POST /webhooks/stripe. Use the signing secret for this endpoint in this mode, and deliver the body unmodified. |
 | `invalid_api_key` | no | Create a new key with POST /api-keys; deleted keys cannot be restored. |

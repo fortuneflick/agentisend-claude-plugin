@@ -52,8 +52,9 @@ export async function run(): Promise<Report> {
 
   // 2. A ceiling. The agent cannot spend past it, whatever it decides to do.
   //    50 in the key's own window (a rolling 30 days) and 10 a minute. The
-  //    window stays as it is: an API key may only lower a limit, and 50 a
-  //    day would be up to 1,500 in 30 days, more than a new Free key's 1,000.
+  //    window stays as it is: an API key may only lower a limit, and a daily
+  //    window is compared over 30 days: 150 a day is up to 4,500, more than a
+  //    new Free key's 3,000 a month.
   const limit = await owner.limits.update(key.id, {
     budget_per_period: 50,
     rate_ceiling_per_minute: 10,

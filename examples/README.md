@@ -43,7 +43,7 @@ fake. An example that stops working fails the tests.
 
 - `AGENTISEND_API_KEY` and `MAIL_FROM` are the only variables every example needs.
   `AGENTISEND_BASE_URL` is optional and defaults to `https://api.agentisend.com`.
-- Every account starts on Free (1,000 a month, 100 a day, no card); before a domain verifies,
+- Every account starts on Free (3,000 a month, 100 a day, no card); before a domain verifies,
   simulator sends work and real sends answer `domain_not_verified`. A simulator address is any
   recipient at `simulator.agentisend.com`: it is accepted, costs nothing and reaches nobody. When
   the plan's inclusion is spent a send is refused with `plan_limit_reached`; on Free the daily cap

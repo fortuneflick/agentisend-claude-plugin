@@ -739,7 +739,7 @@ describe('An agent with a budget and a loop guard', () => {
 
 /**
  * DX-1: the budget guide on the plan every signup starts on. A new key on
- * Free carries 1,000 a month, and the guide's ceiling has to tighten that
+ * Free carries 3,000 a month, and the guide's ceiling has to tighten that
  * from the owner's own key, or the flagship example stops at step 2 with
  * `human_action_required`. The account is inserted with the schema's
  * defaults — no plan fields at all — exactly as a fresh account row is.
