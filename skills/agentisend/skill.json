@@ -57,6 +57,11 @@
       "flags": []
     },
     {
+      "name": "domains setup-link",
+      "summary": "A page the person who owns DNS can open. Prints the URL.",
+      "flags": []
+    },
+    {
       "name": "webhooks listen",
       "summary": "Verify deliveries locally and forward them to your app with the same headers and bytes.",
       "flags": [

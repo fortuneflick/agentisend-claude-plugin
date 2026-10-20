@@ -55,6 +55,10 @@ List sending domains and their status.
 
 Re-check a domain's DNS records.
 
+### `agentisend domains setup-link`
+
+A page the person who owns DNS can open. Prints the URL.
+
 ### `agentisend webhooks listen`
 
 Verify deliveries locally and forward them to your app with the same headers and bytes.
