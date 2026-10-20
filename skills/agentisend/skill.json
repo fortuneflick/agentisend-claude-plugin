@@ -125,6 +125,21 @@
       "name": "completions",
       "summary": "Print a completion script for bash, zsh or fish.",
       "flags": []
+    },
+    {
+      "name": "agent sign-up",
+      "summary": "Sign up an agent bound to one human. Prints the key once. No key needed.",
+      "flags": [
+        "name",
+        "human"
+      ]
+    },
+    {
+      "name": "agent verify",
+      "summary": "Confirm the human with the 6-digit code. Uses the key from sign-up.",
+      "flags": [
+        "code"
+      ]
     }
   ],
   "global_flags": [

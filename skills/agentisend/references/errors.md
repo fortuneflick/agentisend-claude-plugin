@@ -38,6 +38,7 @@ stopped you.
 | `domain_verified_elsewhere` | no | Contact support to move the domain. We cannot verify it here while another account already has it verified. |
 | `domain_not_claimable` | no | A claim moves a domain that another account has verified. If no one has verified it, add it with POST /domains. If it belongs to us or is blocked, write to hello@agentisend.com and name the domain. |
 | `domain_sending_disabled` | no | Turn it back on with PATCH /domains/:id and {"capabilities": {"sending": "enabled"}}, or send from another domain. |
+| `inbound_sender_refused` | no | Change who may write with POST /domains/:id/inbound-rules, or set inbound_policy with PATCH /domains/:id. |
 | `domain_not_verified` | no | If it is pending, publish the required records from GET /domains/:id; checks continue for 72 hours. Test now by sending to an address ending in @simulator.agentisend.com. If it is not registered, POST /domains first. If it is failed, GET /domains/:id names the record to fix, then POST /domains/:id/verify to reopen the window. |
 | `onboarding_recipient_not_a_member` | no | Send to a member sign-in address, or verify a domain with POST /domains and send from that domain. |
 | `onboarding_shape_refused` | no | Omit those fields, or verify a domain with POST /domains and send from that domain. |
@@ -55,6 +56,10 @@ stopped you.
 | `review_sandbox_recipient_only` | no | Send to an address ending in @simulator.agentisend.com, or to reviewer@agentisend.com. Delivering to anyone else needs an account of your own: sign up at agentisend.com. |
 | `trust_throttled` | no | Send volume is temporarily capped because deliverability metrics crossed a published threshold. Check GET /trust/standing for the metric and value, file POST /trust/appeal if this is unexpected. |
 | `suppressed_recipient` | no | GET /suppressions says which address and why. A hard bounce you have fixed can be cleared with DELETE /suppressions/:id; an unsubscribe or a spam complaint cannot — that address asked not to be contacted. |
+| `agent_signup_refused` | no | Use a real inbox that does not already have an account. If it does, sign in and mint a key. |
+| `agent_signup_code_rejected` | no | Enter the 6-digit code from the email, or POST /agent/sign-up again after it expires to send another. |
+| `agent_unconfirmed` | no | POST /agent/verify with the 6-digit code the human received. Until then every recipient has to be that address. |
+| `recipient_ramp` | no | The next recipient slot opens at the time named in this response. POST /emails again after that. Until then, send only to recipients this key has already reached. |
 | `content_refused` | no | The message names the field and what matched in it. Remove or change that part and send again. POST /emails/preflight runs the same check without sending anything. |
 | `recipient_blocklisted` | no | Send to a different address. An address ending in @simulator.agentisend.com is never blocked. |
 | `missing_api_key` | no | Create an API key at https://console.agentisend.com/api-keys and send "Authorization: Bearer as_...". MCP clients can connect with OAuth instead of a key. |

@@ -106,3 +106,15 @@ Options: `--api-key`, `--base-url`
 ### `agentisend completions`
 
 Print a completion script for bash, zsh or fish.
+
+### `agentisend agent sign-up`
+
+Sign up an agent bound to one human. Prints the key once. No key needed.
+
+Options: `--name`, `--human`
+
+### `agentisend agent verify`
+
+Confirm the human with the 6-digit code. Uses the key from sign-up.
+
+Options: `--code`
