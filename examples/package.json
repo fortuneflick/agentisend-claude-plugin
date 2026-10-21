@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@agentisend/sdk-node": "workspace:*",
+    "@anthropic-ai/sdk": "0.130.0",
     "@langchain/core": "^1.2.12",
     "@mastra/core": "1.71.0",
     "@nestjs/common": "^12.1.0",

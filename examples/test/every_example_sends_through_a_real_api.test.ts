@@ -1143,6 +1143,14 @@ describe('A Mastra agent loop', () => {
   });
 });
 
+describe('A Claude Agent SDK loop', () => {
+  it('toolRunner sends once and hands agent_budget_exceeded back to the model', async () => {
+    const agentToken = await agentKeyWithBudget('claude-agent-sdk', 1);
+    const { run } = await importAsAgent(agentToken, () => import('../claude-agent-sdk/agent.js'));
+    await expectBudgetRefusal('claude-agent@example.com', await run());
+  });
+});
+
 const AGENT_REQUIREMENTS = new URL('../requirements-agents.txt', import.meta.url).pathname;
 const AGENT_VENV = new URL('../../node_modules/.cache/agentisend-python-agents', import.meta.url).pathname;
 const AGENT_PYTHON = `${AGENT_VENV}/${process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'}`;

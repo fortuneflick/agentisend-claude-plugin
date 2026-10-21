@@ -30,6 +30,7 @@
     "sveltekit-form-action",
     "test",
     "vercel-ai-sdk",
+    "claude-agent-sdk",
     "nodejs",
     "mastra",
     "remix",

@@ -38,6 +38,7 @@ fake. An example that stops working fails the tests.
 | [langchain-python](langchain-python/) | A LangChain `@tool` invoked twice; the second call is `agent_budget_exceeded`. |
 | [openai-agents-sdk](openai-agents-sdk/) | An OpenAI Agents `function_tool`, invoked through `on_invoke_tool`, same refusal. |
 | [crewai](crewai/) | A CrewAI tool, `run` twice, same refusal. |
+| [claude-agent-sdk](claude-agent-sdk/) | A Claude Agent SDK `send_email` tool inside `toolRunner`. The model is scripted; the second call is `agent_budget_exceeded`. |
 
 ## What they have in common
 
