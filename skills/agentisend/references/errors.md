@@ -123,4 +123,11 @@ stopped you.
 | `support_upload_too_large` | no | Remove a file or send a smaller one. Each file must be 10 MB or smaller, and the message 25 MB in total. |
 | `support_attachment_expired` | no | Ask the person who uploaded it to send the file again on the request. |
 | `support_rate_limited` | wait 3600s | Wait and try again. You can open 5 new requests an hour and send 30 replies an hour. |
+| `appsumo_signature_invalid` | no | Send the notification again from the partner portal. A request we cannot verify is refused. |
+| `appsumo_license_linked` | no | Write to hello@agentisend.com with the license key. |
+| `appsumo_license_inactive` | no | Finish activating it, then enter the license key again. If it stays inactive, write to hello@agentisend.com with the license key. |
+| `appsumo_license_not_confirmed` | no | Check the key and try again. If it is correct, write to hello@agentisend.com with the license key. |
+| `appsumo_ticket_invalid` | no | Enter your AppSumo license key on the redemption page, or start again from AppSumo. |
+| `appsumo_lookup_limited` | wait 60s | Wait a minute and enter the license key again. |
+| `lifetime_sold_on_appsumo` | no | Buy a lifetime plan from the AppSumo deal linked in Settings → Billing. |
 | `sign_in_check_required` | no | Complete the check on the sign-in page, then ask for another code with the token it returns. |
