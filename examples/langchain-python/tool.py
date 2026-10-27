@@ -4,8 +4,8 @@ The loop is the two calls a model would make. The first sends. The second is
 a different message, so a key whose budget is one comes back as
 agent_budget_exceeded. No model is called.
 
-The `agentisend` package is not on the Python package index. The suite puts
-its directory on PYTHONPATH. Install LangChain with `pip install langchain-core`.
+Install both packages with `pip install agentisend langchain-core`. The suite
+runs this file against the SDK checkout; a fresh project uses the released package.
 
 AGENTISEND_API_KEY is the agent's key, with sending_access and a budget.
 MAIL_FROM is an address on a domain you have verified.

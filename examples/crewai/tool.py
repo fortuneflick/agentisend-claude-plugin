@@ -4,8 +4,8 @@
 different message, so a key whose budget is one comes back as
 agent_budget_exceeded. No model is called.
 
-The `agentisend` package is not on the Python package index. Install CrewAI
-with `pip install crewai`.
+Install both packages with `pip install agentisend crewai`. The suite runs
+this file against the SDK checkout; a fresh project uses the released package.
 
 AGENTISEND_API_KEY is the agent's key, with sending_access and a budget.
 MAIL_FROM is an address on a domain you have verified.

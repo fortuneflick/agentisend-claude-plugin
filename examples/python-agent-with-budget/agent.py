@@ -69,8 +69,8 @@ def main() -> int:
     # 2. A ceiling. The agent cannot spend past it, whatever it decides to do.
     #    50 in the key's own window (a rolling 30 days) and 10 a minute. The
     #    window stays as it is: an API key may only lower a limit, and a daily
-    #    window is compared over 30 days: 150 a day is up to 4,500, more than a
-    #    new Free key's 3,000 a month.
+    #    window is compared over 30 days: 200 a day is up to 6,000, more than a
+    #    new Free key's 5,000 a month.
     limit = call(owner_key, "PATCH", f"/limits/keys/{key['id']}",
                  {"budget_per_period": 50, "rate_ceiling_per_minute": 10})
 
