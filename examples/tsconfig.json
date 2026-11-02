@@ -32,9 +32,19 @@
     "vercel-ai-sdk",
     "claude-agent-sdk",
     "nodejs",
+    "vercel-functions",
+    "cloudflare-workers",
+    "aws-lambda",
     "mastra",
     "remix",
     "bun",
-    "deno"
+    "deno",
+    "tanstack-start",
+    "redwoodjs",
+    "railway",
+    "encore-ts",
+    "supabase-edge",
+    "deno-deploy",
+    "auth0"
   ]
 }

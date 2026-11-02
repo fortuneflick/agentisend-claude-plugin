@@ -950,6 +950,97 @@ const CLI_FRAMEWORKS = [
     to: 'rails@example.com',
     subject: 'Your receipt',
   },
+  {
+    name: 'Ruby',
+    command: 'ruby',
+    versionArgs: ['--version'],
+    args: ['send.rb'],
+    cwd: 'ruby',
+    to: 'ruby@example.com',
+    subject: 'Your statement',
+  },
+  {
+    name: 'Rust',
+    command: 'cargo',
+    versionArgs: ['--version'],
+    args: ['run', '--quiet'],
+    cwd: 'rust',
+    to: 'rust@example.com',
+    subject: 'Your shipment',
+  },
+  {
+    name: 'Java',
+    command: 'java',
+    versionArgs: ['-version'],
+    args: ['Send'],
+    cwd: 'java',
+    to: 'java@example.com',
+    subject: 'Your ticket',
+    prepare: { command: 'javac', args: ['Send.java'] },
+  },
+  {
+    name: '.NET',
+    command: 'dotnet',
+    versionArgs: ['--version'],
+    args: ['run', '--verbosity', 'quiet'],
+    cwd: 'dotnet',
+    to: 'dotnet@example.com',
+    subject: 'Your booking',
+  },
+  {
+    name: 'Elixir',
+    command: 'elixir',
+    versionArgs: ['--version'],
+    args: ['send.exs'],
+    cwd: 'elixir',
+    to: 'elixir@example.com',
+    subject: 'Your signup',
+  },
+  {
+    name: 'Symfony',
+    command: 'php',
+    versionArgs: ['--version'],
+    args: ['send.php'],
+    cwd: 'symfony',
+    to: 'symfony@example.com',
+    subject: 'Your invoice is ready',
+  },
+  {
+    name: 'Sinatra',
+    command: 'ruby',
+    versionArgs: ['--version'],
+    args: ['send.rb'],
+    cwd: 'sinatra',
+    to: 'sinatra@example.com',
+    subject: 'Your booking',
+  },
+  {
+    name: 'Axum',
+    command: 'cargo',
+    versionArgs: ['--version'],
+    args: ['run', '--quiet'],
+    cwd: 'axum',
+    to: 'axum@example.com',
+    subject: 'Your release is out',
+  },
+  {
+    name: 'Phoenix',
+    command: 'elixir',
+    versionArgs: ['--version'],
+    args: ['send.exs'],
+    cwd: 'phoenix',
+    to: 'phoenix@example.com',
+    subject: 'Your table is booked',
+  },
+  {
+    name: 'Encore (Go)',
+    command: 'go',
+    versionArgs: ['version'],
+    args: ['run', '.'],
+    cwd: 'encore-go',
+    to: 'encore-go@example.com',
+    subject: 'Your account is ready',
+  },
 ] as const;
 
 async function runCli(
@@ -1006,14 +1097,22 @@ async function expectFourSteps(
   expect((await owner.emails.list({ limit: 100 })).data.filter((e) => e.to.includes(to))).toHaveLength(1);
 }
 
-describe.each(CLI_FRAMEWORKS)('$name', ({ name, command, versionArgs, args, cwd, to, subject }) => {
-  it.skipIf(spawnSync(command, [...versionArgs]).status !== 0)(
+describe.each(CLI_FRAMEWORKS)('$name', ({ name, command, versionArgs, args, cwd, to, subject, ...rest }) => {
+  it.skipIf(
+    spawnSync(command, [...versionArgs]).status !== 0 ||
+      ('prepare' in rest && !!rest.prepare && spawnSync(rest.prepare.command, ['-version']).status !== 0),
+  )(
     `${name} posts to /emails, replays a retry, rejects a bad address, and returns code and fix`,
     async () => {
+      if ('prepare' in rest && rest.prepare) {
+        const built = await runCli(rest.prepare.command, rest.prepare.args, cwd);
+        expect(built.status, `${built.stdout}\n${built.stderr}`).toBe(0);
+      }
       const proc = await runCli(command, args, cwd);
       expect(proc.status, proc.stderr).toBe(0);
       await expectFourSteps(stepsFrom(proc.stdout), to, subject);
     },
+    name === 'Rust' || name === '.NET' || name === 'Axum' ? 180_000 : 60_000,
   );
 });
 
@@ -1084,6 +1183,210 @@ describe('Remix action', () => {
       });
       return { status: response.status, body: (await response.json()) as Record<string, unknown> };
     }, 'remix@example.com', 'Your receipt');
+  });
+});
+
+describe('Vercel Functions', () => {
+  it('POST sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { POST } = await import('../vercel-functions/handler.js');
+    await expectHandlerFlow(async (body) => {
+      const response = await POST(
+        new Request('https://example.vercel.app/api/send', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+      );
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'vercel-fn@example.com', 'Your preview is ready');
+  });
+});
+
+describe('Cloudflare Workers', () => {
+  it('fetch sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { default: worker } = await import('../cloudflare-workers/worker.js');
+    const env = {
+      AGENTISEND_API_KEY: process.env.AGENTISEND_API_KEY ?? '',
+      MAIL_FROM: process.env.MAIL_FROM ?? '',
+      AGENTISEND_BASE_URL: process.env.AGENTISEND_BASE_URL,
+    };
+    await expectHandlerFlow(async (body) => {
+      const response = await worker.fetch(
+        new Request('https://example.workers.dev/', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+        env,
+      );
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'workers@example.com', 'Your worker published');
+  });
+});
+
+describe('TanStack Start', () => {
+  it('the server function handler sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { handler } = await import('../tanstack-start/send.js');
+    await expectHandlerFlow(
+      async (body) => handler({ data: body }),
+      'tanstack@example.com',
+      'Your form was received',
+    );
+  });
+});
+
+describe('RedwoodJS', () => {
+  it('the service sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { sendReceipt } = await import('../redwoodjs/send.js');
+    await expectHandlerFlow(
+      async (body) => sendReceipt({ input: body }),
+      'redwood@example.com',
+      'We received your note',
+    );
+  });
+});
+
+describe('Railway', () => {
+  let server: Server;
+  let origin: string;
+
+  beforeAll(async () => {
+    const { server: nodeServer } = await import('../railway/server.js');
+    server = nodeServer;
+    await new Promise<void>((resolve) => {
+      server.listen(0, '127.0.0.1', () => resolve());
+    });
+    origin = `http://127.0.0.1:${(server.address() as AddressInfo).port}`;
+  });
+
+  afterAll(async () => {
+    await new Promise<void>((resolve) => server.close(() => resolve()));
+  });
+
+  it('POST /send sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    await expectHandlerFlow(async (body) => {
+      const response = await fetch(`${origin}/send`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'railway@example.com', 'Your service is live');
+  });
+});
+
+describe('Encore (TypeScript)', () => {
+  it('the endpoint function sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { send } = await import('../encore-ts/send.js');
+    await expectHandlerFlow(async (body) => send(body), 'encore-ts@example.com', 'Your workspace is ready');
+  });
+});
+
+describe('Supabase Edge Functions', () => {
+  it('the function sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { handle } = await import('../supabase-edge/handler.js');
+    await expectHandlerFlow(async (body) => {
+      const response = await handle(
+        new Request('http://localhost/functions/v1/send', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+      );
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'edge@example.com', 'You are invited');
+  });
+});
+
+describe('Deno Deploy', () => {
+  it('the handler sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { handle } = await import('../deno-deploy/handler.js');
+    await expectHandlerFlow(async (body) => {
+      const response = await handle(
+        new Request('https://example.deno.net/', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(body),
+        }),
+      );
+      return { status: response.status, body: (await response.json()) as Record<string, unknown> };
+    }, 'deno-deploy@example.com', 'Your preview is deployed');
+  });
+});
+
+describe('Auth0 custom email provider', () => {
+  function calls() {
+    const dropped: string[] = [];
+    const retried: string[] = [];
+    const api = {
+      notification: {
+        drop: (reason: string) => dropped.push(reason),
+        retry: (reason: string) => retried.push(reason),
+      },
+    };
+    return { api, dropped, retried };
+  }
+
+  it('delivers the notification, replays a retry, drops a bad address, and drops a mismatched body with code and fix', async () => {
+    const { onExecuteCustomEmailProvider } = await import('../auth0/action.js');
+    const from = process.env.MAIL_FROM ?? '';
+    const event = {
+      notification: {
+        from,
+        to: 'auth0@example.com',
+        subject: 'Verify your email',
+        text: 'Code: first',
+        message_type: 'verify_email',
+      },
+    };
+    const first = calls();
+    await onExecuteCustomEmailProvider(event, first.api);
+    expect(first.dropped).toEqual([]);
+    expect(first.retried).toEqual([]);
+    const email = await acceptedFor('auth0@example.com');
+    expect(email.subject).toBe('Verify your email');
+    expect(email.text ?? '').toContain('Code: first');
+
+    const retry = calls();
+    await onExecuteCustomEmailProvider(event, retry.api);
+    expect(retry.dropped).toEqual([]);
+    expect((await owner.emails.list({ limit: 100 })).data.filter((row) => row.to.includes('auth0@example.com'))).toHaveLength(1);
+
+    const invalid = calls();
+    await onExecuteCustomEmailProvider(
+      { notification: { from, to: 'not-an-address', subject: 'Verify your email', text: 'Code: first', message_type: 'verify_email' } },
+      invalid.api,
+    );
+    expect(invalid.dropped[0]).toMatch(/one address/);
+    expect(invalid.retried).toEqual([]);
+
+    const mismatch = ERROR_CATALOG.idempotency_payload_mismatch;
+    const refused = calls();
+    await onExecuteCustomEmailProvider(
+      {
+        notification: {
+          from,
+          to: 'auth0@example.com',
+          subject: 'Verify your email',
+          text: 'Code: second',
+          message_type: 'verify_email',
+        },
+      },
+      refused.api,
+    );
+    expect(refused.retried).toEqual([]);
+    expect(refused.dropped[0]).toContain(mismatch.code);
+    expect(refused.dropped[0]).toContain(mismatch.fix);
+  });
+});
+
+describe('AWS Lambda', () => {
+  it('the handler sends once, replays a retry, rejects a bad address, and returns code and fix', async () => {
+    const { handler } = await import('../aws-lambda/handler.js');
+    await expectHandlerFlow(async (body) => {
+      const result = await handler({ body: JSON.stringify(body) });
+      return { status: result.statusCode, body: JSON.parse(result.body) as Record<string, unknown> };
+    }, 'lambda@example.com', 'Your report is ready');
   });
 });
 
