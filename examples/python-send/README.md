@@ -1,4 +1,6 @@
-# Send one email, in Python
+# Send email from Python with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/python
 
 The quickstart's Python block: one `POST /emails` with the standard library, an idempotency key
 named after the send, and a refusal printed as its `code` and `fix`.

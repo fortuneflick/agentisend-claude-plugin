@@ -1,4 +1,6 @@
-# SvelteKit form action
+# Send email from SvelteKit with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/sveltekit
 
 A contact form whose action runs on the server: the API key never reaches the browser and the form
 still works with JavaScript switched off. The visitor's address goes in `reply_to` rather than

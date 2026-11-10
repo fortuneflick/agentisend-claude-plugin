@@ -1,4 +1,6 @@
-# Auth.js (NextAuth) email provider
+# Send email from Auth.js with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/authjs
 
 A `sendVerificationRequest` that delivers the Auth.js magic link over HTTPS through AgentiSend, so
 sign-in works on hosts that block outbound SMTP. A send that fails throws with the error code and

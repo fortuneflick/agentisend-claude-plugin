@@ -1,4 +1,6 @@
-# Vercel AI SDK
+# Send email from a Vercel AI SDK agent with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/vercel-ai-sdk
 
 A `sendEmail` tool for the AI SDK. Its `execute` sends one email through the agent's own key with
 an idempotency key derived from the purpose and the recipient, and returns either the message id

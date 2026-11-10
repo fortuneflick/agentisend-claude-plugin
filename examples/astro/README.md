@@ -1,4 +1,6 @@
-# Astro
+# Send email from Astro with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/astro
 
 An API route that confirms a waitlist sign-up and returns the message id. It reads a form post, so
 a plain `<form method="POST" action="/api/waitlist">` works with JavaScript switched off, and it

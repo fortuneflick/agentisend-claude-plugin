@@ -2,10 +2,10 @@
 /**
  * Symfony — the action a controller route calls.
  *
- * There is no Symfony package for this API. The method below is what you put
- * on a controller and map with the Route attribute. It posts JSON to
- * POST /emails with PHP streams, the same call the action would make. The
- * framework is not booted here; the method is the one the route holds.
+ * The Symfony Mailer transport is in the agentisend/laravel package, on the
+ * Laravel guide. The method below is what you put on a controller and map
+ * with the Route attribute. It posts JSON to POST /emails with PHP streams.
+ * The framework is not booted here; the method is the one the route holds.
  *
  * AGENTISEND_API_KEY, MAIL_FROM, and optionally AGENTISEND_BASE_URL.
  * Run: php send.php

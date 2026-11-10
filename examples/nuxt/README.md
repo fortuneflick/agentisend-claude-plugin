@@ -1,4 +1,6 @@
-# Nuxt
+# Send email from Nuxt with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/nuxt
 
 A Nitro server route that confirms a booking and returns the message id. It refuses a malformed
 address before the API is called, and it sends once per booking however many times the request is

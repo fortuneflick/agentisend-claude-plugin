@@ -1,4 +1,6 @@
-# Fastify
+# Send email from Fastify with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/fastify
 
 A `POST /send` route that sends an invoice notice and returns the message id. The route's JSON
 schema refuses a body without a well-formed address before the handler runs, so a bad request never

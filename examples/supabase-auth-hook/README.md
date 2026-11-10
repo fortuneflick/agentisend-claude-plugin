@@ -1,4 +1,6 @@
-# Supabase Send Email Hook
+# Send email from Supabase with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/supabase
 
 Supabase posts every sign-up, magic-link, invite and password-recovery email to an HTTPS endpoint
 you host; this handler verifies the Standard Webhooks signature, builds the verify link from

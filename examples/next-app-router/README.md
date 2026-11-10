@@ -1,4 +1,6 @@
-# Next.js App Router
+# Send email from Next.js with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/nextjs
 
 A route handler at `app/api/send/route.ts` that sends a transactional email and returns the message
 id, plus the same send as a Server Action in `app/actions.ts` for forms that post directly to the

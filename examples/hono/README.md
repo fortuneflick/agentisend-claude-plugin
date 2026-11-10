@@ -1,4 +1,6 @@
-# Hono
+# Send email from Hono with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/hono
 
 A single `POST /send` route that sends a transactional email and returns the message id. The SDK is
 plain fetch with no Node built-ins, so the same file runs on Workers, Deno, Bun and Node.

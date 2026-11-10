@@ -4,41 +4,68 @@ Copy-pasteable integrations, one directory each. Every one of them is run by the
 a local AgentiSend server — routes, gates and send worker are real, the transport is the in-memory
 fake. An example that stops working fails the tests.
 
-| Directory | What it shows |
-|---|---|
-| [next-app-router](next-app-router/) | A Next.js route handler and a Server Action, both sending with an idempotency key. |
-| [supabase-auth-hook](supabase-auth-hook/) | Supabase's Send Email Hook: verify the signature, build the link, send it. |
-| [better-auth](better-auth/) | The `sendVerificationEmail` and `sendResetPassword` callbacks. |
-| [authjs-email-provider](authjs-email-provider/) | Auth.js `sendVerificationRequest` over HTTPS instead of SMTP. |
-| [hono](hono/) | One `POST /send` route, the same on Workers, Deno, Bun and Node. |
-| [sveltekit-form-action](sveltekit-form-action/) | A contact form whose action runs on the server and works without JavaScript. |
-| [express](express/) | A `POST /send` route on an app you can mount anywhere. |
-| [ai-agent-with-budget](ai-agent-with-budget/) | A scoped key, a ceiling, and the loop guard refusing the fourth identical send. |
-| [python-send](python-send/) | One send from Python with the standard library: the quickstart's Python block, byte for byte. |
-| [python-agent-with-budget](python-agent-with-budget/) | The same agent in Python with nothing installed: three requests with the standard library. |
-| [fastapi](fastapi/) | A FastAPI `POST /send` route: the address checked first, one idempotency key per recipient, a refusal answered as `code` and `fix`. |
-| [flask](flask/) | The same route in Flask, sending one receipt per order. |
-| [django](django/) | A Django view with its settings inline, sending one shipping notice per order. |
-| [vercel-ai-sdk](vercel-ai-sdk/) | A `sendEmail` tool, and a scripted `generateText` loop that stops on `agent_budget_exceeded`. |
-| [langchain](langchain/) | The same tool for LangChain.js, built with `tool()` from `@langchain/core/tools`. |
-| [fastify](fastify/) | A `POST /send` route whose JSON schema refuses a bad address before the handler runs. |
-| [astro](astro/) | An API route that confirms a waitlist sign-up from a plain form post. |
-| [nuxt](nuxt/) | A Nitro server route that sends one booking confirmation per booking. |
-| [react-router](react-router/) | A React Router (formerly Remix) `action` that emails a download link to the person who asked. |
-| [nestjs](nestjs/) | A controller and a service sending one order confirmation per order. |
-| [nodejs](nodejs/) | A `node:http` `POST /send` route, no framework, one receipt per address. |
-| [go](go/) | `POST /emails` with `net/http`: one invoice, a replay, a bad address, a mismatched retry. |
-| [php](php/) | The same four steps with PHP streams. |
-| [laravel](laravel/) | A controller method that posts a shipping notice with PHP streams. |
-| [rails](rails/) | A controller method that posts a receipt with `Net::HTTP`. |
-| [remix](remix/) | A Remix `action` that emails a receipt from a form post. |
-| [bun](bun/) | A fetch handler for `Bun.serve`, one receipt per address. |
-| [deno](deno/) | A fetch handler for `Deno.serve`, one deploy notice per address. |
-| [mastra](mastra/) | A Mastra `createTool`, registered on an `Agent`, run until the budget refusal. |
-| [langchain-python](langchain-python/) | A LangChain `@tool` invoked twice; the second call is `agent_budget_exceeded`. |
-| [openai-agents-sdk](openai-agents-sdk/) | An OpenAI Agents `function_tool`, invoked through `on_invoke_tool`, same refusal. |
-| [crewai](crewai/) | A CrewAI tool, `run` twice, same refusal. |
-| [claude-agent-sdk](claude-agent-sdk/) | A Claude Agent SDK `send_email` tool inside `toolRunner`. The model is scripted; the second call is `agent_budget_exceeded`. |
+| Directory | Query | Guide |
+|---|---|---|
+| [ai-agent-with-budget](ai-agent-with-budget/) | Send email from a budgeted agent with AgentiSend | [agent-with-budget](https://agentisend.com/docs/guides/agent-with-budget) |
+| [astro](astro/) | Send email from Astro with AgentiSend | [astro](https://agentisend.com/docs/guides/astro) |
+| [auth0](auth0/) | Send email from Auth0 with AgentiSend | [auth0](https://agentisend.com/docs/guides/auth0) |
+| [authjs-email-provider](authjs-email-provider/) | Send email from Auth.js with AgentiSend | [authjs](https://agentisend.com/docs/guides/authjs) |
+| [aws-lambda](aws-lambda/) | Send email from AWS Lambda with AgentiSend | [aws-lambda](https://agentisend.com/docs/guides/aws-lambda) |
+| [axum](axum/) | Send email from Axum with AgentiSend | [axum](https://agentisend.com/docs/guides/axum) |
+| [better-auth](better-auth/) | Send email from Better Auth with AgentiSend | [better-auth](https://agentisend.com/docs/guides/better-auth) |
+| [bun](bun/) | Send email from Bun with AgentiSend | [bun-and-deno](https://agentisend.com/docs/guides/bun-and-deno) |
+| [claude-agent-sdk](claude-agent-sdk/) | Send email from the Claude Agent SDK with AgentiSend | [claude-agent-sdk](https://agentisend.com/docs/guides/claude-agent-sdk) |
+| [cloudflare-workers](cloudflare-workers/) | Send email from Cloudflare Workers with AgentiSend | [cloudflare-workers](https://agentisend.com/docs/guides/cloudflare-workers) |
+| [crewai](crewai/) | Send email from CrewAI with AgentiSend | [crewai](https://agentisend.com/docs/guides/crewai) |
+| [deno](deno/) | Send email from Deno with AgentiSend | [bun-and-deno](https://agentisend.com/docs/guides/bun-and-deno) |
+| [deno-deploy](deno-deploy/) | Send email from Deno Deploy with AgentiSend | [deno-deploy](https://agentisend.com/docs/guides/deno-deploy) |
+| [django](django/) | Send email from Django with AgentiSend | [django](https://agentisend.com/docs/guides/django) |
+| [dotnet](dotnet/) | Send email from .NET with AgentiSend | [dotnet](https://agentisend.com/docs/guides/dotnet) |
+| [elixir](elixir/) | Send email from Elixir with AgentiSend | [elixir](https://agentisend.com/docs/guides/elixir) |
+| [encore-go](encore-go/) | Send email from Encore (Go) with AgentiSend | [encore-go](https://agentisend.com/docs/guides/encore-go) |
+| [encore-ts](encore-ts/) | Send email from Encore (TypeScript) with AgentiSend | [encore-ts](https://agentisend.com/docs/guides/encore-ts) |
+| [express](express/) | Send email from Express with AgentiSend | [express](https://agentisend.com/docs/guides/express) |
+| [fastapi](fastapi/) | Send email from FastAPI with AgentiSend | [fastapi](https://agentisend.com/docs/guides/fastapi) |
+| [fastify](fastify/) | Send email from Fastify with AgentiSend | [fastify](https://agentisend.com/docs/guides/fastify) |
+| [flask](flask/) | Send email from Flask with AgentiSend | [flask](https://agentisend.com/docs/guides/flask) |
+| [go](go/) | Send email from Go with AgentiSend | [go](https://agentisend.com/docs/guides/go) |
+| [go-send](go-send/) | Send email from Go with AgentiSend | [sdks](https://agentisend.com/docs/guides/sdks) |
+| [hono](hono/) | Send email from Hono with AgentiSend | [hono](https://agentisend.com/docs/guides/hono) |
+| [java](java/) | Send email from Java with AgentiSend | [java](https://agentisend.com/docs/guides/java) |
+| [langchain](langchain/) | Send email from a LangChain.js agent with AgentiSend | [langchain](https://agentisend.com/docs/guides/langchain) |
+| [langchain-python](langchain-python/) | Send email from LangChain for Python with AgentiSend | [langchain-python](https://agentisend.com/docs/guides/langchain-python) |
+| [laravel](laravel/) | Send email from Laravel with AgentiSend | [laravel](https://agentisend.com/docs/guides/laravel) |
+| [mastra](mastra/) | Send email from Mastra with AgentiSend | [mastra](https://agentisend.com/docs/guides/mastra) |
+| [nestjs](nestjs/) | Send email from NestJS with AgentiSend | [nestjs](https://agentisend.com/docs/guides/nestjs) |
+| [next-app-router](next-app-router/) | Send email from Next.js with AgentiSend | [nextjs](https://agentisend.com/docs/guides/nextjs) |
+| [node-sdk-send](node-sdk-send/) | Send email from the Node SDK with AgentiSend | [sdks](https://agentisend.com/docs/guides/sdks) |
+| [nodejs](nodejs/) | Send email from Node.js with AgentiSend | [nodejs](https://agentisend.com/docs/guides/nodejs) |
+| [nuxt](nuxt/) | Send email from Nuxt with AgentiSend | [nuxt](https://agentisend.com/docs/guides/nuxt) |
+| [openai-agents-sdk](openai-agents-sdk/) | Send email from the OpenAI Agents SDK with AgentiSend | [openai-agents-sdk](https://agentisend.com/docs/guides/openai-agents-sdk) |
+| [phoenix](phoenix/) | Send email from Phoenix with AgentiSend | [phoenix](https://agentisend.com/docs/guides/phoenix) |
+| [php](php/) | Send email from PHP with AgentiSend | [php](https://agentisend.com/docs/guides/php) |
+| [php-send](php-send/) | Send email from PHP with AgentiSend | [sdks](https://agentisend.com/docs/guides/sdks) |
+| [python-agent-with-budget](python-agent-with-budget/) | Send email from a Python agent with AgentiSend | [python](https://agentisend.com/docs/guides/python) |
+| [python-send](python-send/) | Send email from Python with AgentiSend | [python](https://agentisend.com/docs/guides/python) |
+| [rails](rails/) | Send email from Rails with AgentiSend | [rails](https://agentisend.com/docs/guides/rails) |
+| [railway](railway/) | Send email from Railway with AgentiSend | [railway](https://agentisend.com/docs/guides/railway) |
+| [react-router](react-router/) | Send email from React Router with AgentiSend | [react-router](https://agentisend.com/docs/guides/react-router) |
+| [redwoodjs](redwoodjs/) | Send email from RedwoodJS with AgentiSend | [redwoodjs](https://agentisend.com/docs/guides/redwoodjs) |
+| [remix](remix/) | Send email from Remix with AgentiSend | [remix](https://agentisend.com/docs/guides/remix) |
+| [ruby](ruby/) | Send email from Ruby with AgentiSend | [ruby](https://agentisend.com/docs/guides/ruby) |
+| [rust](rust/) | Send email from Rust with AgentiSend | [rust](https://agentisend.com/docs/guides/rust) |
+| [sinatra](sinatra/) | Send email from Sinatra with AgentiSend | [sinatra](https://agentisend.com/docs/guides/sinatra) |
+| [supabase-auth-hook](supabase-auth-hook/) | Send email from Supabase with AgentiSend | [supabase](https://agentisend.com/docs/guides/supabase) |
+| [supabase-edge](supabase-edge/) | Send email from Supabase Edge Functions with AgentiSend | [supabase-edge-functions](https://agentisend.com/docs/guides/supabase-edge-functions) |
+| [sveltekit-form-action](sveltekit-form-action/) | Send email from SvelteKit with AgentiSend | [sveltekit](https://agentisend.com/docs/guides/sveltekit) |
+| [symfony](symfony/) | Send email from Symfony with AgentiSend | [symfony](https://agentisend.com/docs/guides/symfony) |
+| [tanstack-start](tanstack-start/) | Send email from TanStack Start with AgentiSend | [tanstack-start](https://agentisend.com/docs/guides/tanstack-start) |
+| [vercel-ai-sdk](vercel-ai-sdk/) | Send email from a Vercel AI SDK agent with AgentiSend | [vercel-ai-sdk](https://agentisend.com/docs/guides/vercel-ai-sdk) |
+| [vercel-functions](vercel-functions/) | Send email from Vercel Functions with AgentiSend | [vercel-functions](https://agentisend.com/docs/guides/vercel-functions) |
+| [webhook-verify-go](webhook-verify-go/) | Verify an AgentiSend webhook in Go | [webhooks](https://agentisend.com/docs/guides/webhooks) |
+| [webhook-verify-node](webhook-verify-node/) | Verify an AgentiSend webhook in Node.js | [webhooks](https://agentisend.com/docs/guides/webhooks) |
+| [webhook-verify-python](webhook-verify-python/) | Verify an AgentiSend webhook in Python | [webhooks](https://agentisend.com/docs/guides/webhooks) |
+
 
 ## What they have in common
 
@@ -48,8 +75,8 @@ fake. An example that stops working fails the tests.
   simulator sends work and real sends answer `domain_not_verified`. A simulator address is any
   recipient at `simulator.agentisend.com`: it is accepted, costs nothing and reaches nobody. When
   the plan's inclusion is spent a send is refused with `plan_limit_reached`; on Free the daily cap
-  answers `daily_limit_reached`. Every example is also a guide at
-  `agentisend.com/docs/guides/<name>`, with the same file inlined.
+  answers `daily_limit_reached`. Every example is also a guide; the table links the
+  folder to it, and the guide inlines the same file.
 - The key is read on the server. None of these examples put it anywhere a browser can reach.
 - Every mutating call carries an `Idempotency-Key` derived from the thing being done
   (`welcome/user@example.com`), not from the moment, so a retry after a timeout replays the first

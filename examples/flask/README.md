@@ -1,4 +1,6 @@
-# Send email from Flask
+# Send email from Flask with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/flask
 
 One `POST /send` route that sends an order receipt with an idempotency key derived from the order,
 checks the address before calling the API, and answers a refusal with its `code` and `fix`.

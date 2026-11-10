@@ -1,4 +1,6 @@
-# Better Auth
+# Send email from Better Auth with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/better-auth
 
 The `sendVerificationEmail` and `sendResetPassword` callbacks, sending through AgentiSend. Each one
 passes an idempotency key built from the auth token, so a retry after a network timeout replays the

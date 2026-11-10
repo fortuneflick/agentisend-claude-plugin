@@ -1,4 +1,6 @@
-# Express
+# Send email from Express with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/express
 
 A `POST /send` route that sends a transactional email and returns the message id. The app is
 exported without calling `listen`, so it can be mounted into a larger server or started from your

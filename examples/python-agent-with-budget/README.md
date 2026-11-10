@@ -1,4 +1,6 @@
-# An agent with a budget and a loop guard, in Python
+# Send email from a Python agent with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/python
 
 The same three calls as the Node example, from a Python script with no dependencies beyond the
 standard library: a key scoped to sending, a ceiling on it, and the loop guard refusing the

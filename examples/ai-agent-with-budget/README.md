@@ -1,4 +1,6 @@
-# An agent with a budget and a loop guard
+# Send email from a budgeted agent with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/agent-with-budget
 
 A Node script that mints a key scoped to sending only, puts a ceiling of 50 emails in 30 days on it,
 hands that key to an agent, and then lets the agent loop. After three near-identical sends to the

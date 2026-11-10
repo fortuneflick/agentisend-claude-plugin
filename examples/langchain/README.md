@@ -1,4 +1,6 @@
-# LangChain.js
+# Send email from a LangChain.js agent with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/langchain
 
 A `send_email` tool built with `tool()` from `@langchain/core/tools`. It sends one email through
 the agent's own key with an idempotency key derived from the purpose and the recipient, and returns

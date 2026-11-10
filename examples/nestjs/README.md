@@ -1,4 +1,6 @@
-# NestJS
+# Send email from NestJS with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/nestjs
 
 A controller and a service: `POST /orders/confirmation` refuses a malformed address before the API
 is called, sends one order confirmation per order however many times the request is retried, and

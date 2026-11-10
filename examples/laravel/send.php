@@ -2,10 +2,10 @@
 /**
  * Laravel — the method a controller route calls.
  *
- * There is no Laravel package for this API. The method below is what you put
- * on a controller: it posts JSON to POST /emails with PHP streams, the same
- * call a queued job would make. The framework is not booted here; the method
- * is the one the route holds.
+ * The mail driver is the agentisend/laravel package, on this guide. The method
+ * below is the other way: it posts JSON to POST /emails with PHP streams, the
+ * same call a queued job would make. The framework is not booted here; the
+ * method is the one the route holds.
  *
  * AGENTISEND_API_KEY, MAIL_FROM, and optionally AGENTISEND_BASE_URL.
  * Run: php send.php

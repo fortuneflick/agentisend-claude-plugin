@@ -1,4 +1,6 @@
-# React Router
+# Send email from React Router with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/react-router
 
 The `action` of a React Router route (framework mode, the successor to Remix) that emails a
 download link to the person who asked for it and returns the message id. It refuses a malformed

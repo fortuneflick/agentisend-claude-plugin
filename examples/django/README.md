@@ -1,4 +1,6 @@
-# Send email from Django
+# Send email from Django with AgentiSend
+
+Guide: https://agentisend.com/docs/guides/django
 
 One view that sends a shipping notice from a POST, with an idempotency key derived from the order,
 checks the address before calling the API, and answers a refusal with its `code` and `fix`. The
