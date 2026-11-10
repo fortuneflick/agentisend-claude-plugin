@@ -11,7 +11,10 @@ This repository is the single canonical source every catalog points at. The
 platform monorepo is private; the generated half of this repository is written
 from it by `pnpm gen:agent-skill` and pinned by `agent_skill_repo_parity`.
 **Never hand-edit a file inside a `<!-- GENERATED:… -->` region, `skills/`,
-`examples/`, `server.json` or a manifest** — regenerate and push.
+`server.json` or a manifest** — regenerate and push. The runnable examples
+moved to https://github.com/agentisend/examples on 2026-11-11: the Claude plugin
+directory refuses code and SVG files from an organization that is not Verified,
+so this repository ships only Markdown, JSON, YAML and PNG.
 
 ## 0. Before anything
 
@@ -156,7 +159,7 @@ owner runs. Keep the ed25519 private key offline; it is what republishing needs.
 - Repository URL `https://github.com/fortuneflick/agentisend-claude-plugin`,
   manifest `.cursor-plugin/plugin.json`, marketplace file
   `.cursor-plugin/marketplace.json`, logo
-  `https://raw.githubusercontent.com/fortuneflick/agentisend-claude-plugin/main/assets/logo.svg`,
+  `https://raw.githubusercontent.com/fortuneflick/agentisend-claude-plugin/main/assets/icon-192.png`,
   org name `AgentiSend`, handle `agentisend`, contact `hello@agentisend.com`,
   website `https://agentisend.com`.
 - The Cursor plugin is skill-only; the one-click server install is the deeplink

@@ -11,7 +11,7 @@
   "homepage": "https://agentisend.com/docs/guides/mcp",
   "repository": "https://github.com/fortuneflick/agentisend-claude-plugin",
   "license": "MIT",
-  "icon": "./assets/logo.svg",
+  "icon": "./assets/icon-192.png",
   "skills": [
     "./skills/agentisend"
   ]

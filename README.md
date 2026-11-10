@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/logo.svg" alt="AgentiSend" width="88"></p>
+![AgentiSend](assets/icon-192.png)
 
 <!-- GENERATED:lede START -->
 # AgentiSend for applications and AI agents
@@ -159,12 +159,12 @@ at https://agentisend.com/docs/guides/mcp.
 
 ## Examples
 
-`examples/` carries one runnable directory per integration — Next.js App
-Router, Supabase's Send Email Hook, Better Auth, Auth.js, Hono, Express, a
-SvelteKit form action, and an agent with a daily ceiling that refuses the
-fourth identical send. Each one is executed against a real API server on every
-build of the platform, so an example that stops working fails that build rather
-than your first send.
+[github.com/agentisend/examples](https://github.com/agentisend/examples) carries
+one runnable directory per integration — Next.js App Router, Supabase's Send
+Email Hook, Better Auth, Auth.js, Hono, Express, a SvelteKit form action, and an
+agent with a daily ceiling that refuses the fourth identical send. Each one is
+executed against a real API server on every build of the platform, so an example
+that stops working fails that build rather than your first send.
 
 ## Security
 
