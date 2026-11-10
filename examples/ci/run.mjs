@@ -49,7 +49,7 @@ const CLI = [
 
 function folders() {
   return readdirSync(ROOT, { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && !['test', 'node_modules', 'ci', '.github'].includes(entry.name))
+    .filter((entry) => entry.isDirectory() && !entry.name.startsWith('.') && !['test', 'node_modules', 'ci'].includes(entry.name))
     .map((entry) => entry.name)
     .sort();
 }
