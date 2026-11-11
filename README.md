@@ -1,5 +1,3 @@
-![AgentiSend](assets/icon-192.png)
-
 <!-- GENERATED:lede START -->
 # AgentiSend for applications and AI agents
 

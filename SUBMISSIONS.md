@@ -159,7 +159,7 @@ owner runs. Keep the ed25519 private key offline; it is what republishing needs.
 - Repository URL `https://github.com/fortuneflick/agentisend-claude-plugin`,
   manifest `.cursor-plugin/plugin.json`, marketplace file
   `.cursor-plugin/marketplace.json`, logo
-  `https://raw.githubusercontent.com/fortuneflick/agentisend-claude-plugin/main/assets/icon-192.png`,
+  the 192 px icon in the assets folder,
   org name `AgentiSend`, handle `agentisend`, contact `hello@agentisend.com`,
   website `https://agentisend.com`.
 - The Cursor plugin is skill-only; the one-click server install is the deeplink
@@ -228,7 +228,7 @@ Packet to have ready:
 | Docs URL | `https://agentisend.com/docs/guides/mcp` |
 | Privacy URL | `https://agentisend.com/privacy` |
 | Support | `hello@agentisend.com` |
-| Icon | assets/icon-192.png (192 px PNG) |
+| Icon | the 192 px PNG in the assets folder |
 | Example prompts | "Send this receipt to the customer" · "What can I spend today?" · "Preflight this send and tell me what would stop it" · "Why did that message bounce?" · "Set up acme.com as a sending domain" |
 | Test account | Review URL (no password, no MFA): `https://api.agentisend.com/review-login?token=` + the value in `/root/agentisend-review-login.token` on the Coolify host. Lands in **AgentiSend Review Sandbox** as `reviewer@agentisend.com`. MFA is off and cannot be turned on. |
 | Positive cases | Send a receipt to `customer@example.com`; preflight that send; explain the seeded bounce; add a sending domain and read its records; add a suppression after an unsubscribe |
