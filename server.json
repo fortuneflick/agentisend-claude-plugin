@@ -3,7 +3,7 @@
   "name": "io.github.fortuneflick/agentisend",
   "title": "AgentiSend",
   "description": "Email API for apps and AI agents: budgets per key, a kill switch, refusals that name the fix.",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "websiteUrl": "https://agentisend.com/docs/guides/mcp",
   "repository": {
     "url": "https://github.com/fortuneflick/agentisend-claude-plugin",
@@ -14,7 +14,7 @@
       "registryType": "npm",
       "registryBaseUrl": "https://registry.npmjs.org",
       "identifier": "@agentisend/mcp-server",
-      "version": "0.1.4",
+      "version": "0.1.5",
       "transport": {
         "type": "stdio"
       },
