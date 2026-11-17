@@ -12,6 +12,7 @@
   "repository": "https://github.com/fortuneflick/agentisend-claude-plugin",
   "license": "MIT",
   "icon": "./assets/icon-192.png",
+  "logo": "assets/icon-192.png",
   "skills": [
     "./skills/agentisend"
   ]
